@@ -18,14 +18,21 @@ namespace AiHackApi.Controllers
             _pacienteService = pacienteService;
         }
 
-        // Obter todos os pacientes
+        /// <summary>
+        /// Lista todos os pacientes cadastrados.
+        /// </summary>
+        /// <returns>Uma lista de pacientes.</returns>
         [HttpGet]
         public async Task<IEnumerable<PacienteDto>> GetPacientes()
         {
             return await _pacienteService.GetAllPacientesAsync();
         }
 
-        // Obter paciente por ID
+        /// <summary>
+        /// Obtém um paciente específico pelo ID.
+        /// </summary>
+        /// <param name="id">O ID do paciente.</param>
+        /// <returns>O paciente correspondente ao ID informado.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<PacienteDto>> GetPacienteById(int id)
         {
@@ -37,7 +44,11 @@ namespace AiHackApi.Controllers
             return Ok(paciente);
         }
 
-        // Criar novo paciente
+        /// <summary>
+        /// Cadastra um novo paciente.
+        /// </summary>
+        /// <param name="pacienteDto">Objeto com os dados do paciente a ser criado.</param>
+        /// <returns>O paciente recém-criado.</returns>
         [HttpPost]
         public async Task<ActionResult> CreatePaciente([FromBody] PacienteDto pacienteDto)
         {
@@ -45,7 +56,12 @@ namespace AiHackApi.Controllers
             return CreatedAtAction(nameof(GetPacienteById), new { id = pacienteDto.IdPaciente }, pacienteDto);
         }
 
-        // Atualizar paciente
+        /// <summary>
+        /// Atualiza os dados de um paciente existente.
+        /// </summary>
+        /// <param name="id">O ID do paciente a ser atualizado.</param>
+        /// <param name="pacienteDto">Objeto com os dados atualizados do paciente.</param>
+        /// <returns>Resposta vazia se a atualização for bem-sucedida.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePaciente(int id, [FromBody] PacienteDto pacienteDto)
         {
@@ -58,7 +74,11 @@ namespace AiHackApi.Controllers
             return NoContent();
         }
 
-        // Deletar paciente
+        /// <summary>
+        /// Exclui um paciente pelo ID.
+        /// </summary>
+        /// <param name="id">O ID do paciente a ser excluído.</param>
+        /// <returns>Resposta vazia se a exclusão for bem-sucedida.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePaciente(int id)
         {
@@ -73,4 +93,3 @@ namespace AiHackApi.Controllers
         }
     }
 }
-
