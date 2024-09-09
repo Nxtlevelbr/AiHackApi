@@ -1,43 +1,47 @@
-﻿using AiHackApi.Models;
-using AiHackApi.Repositories;
+﻿using AiHackApi.Data;
+using AiHackApi.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AiHackApi.Services
+public class ConsultaService : IConsultaService
 {
-    public class ConsultaService : IConsultaService
+    private readonly ApplicationDbContext _context;
+
+    public ConsultaService(ApplicationDbContext context)
     {
-        private readonly IConsultaRepository _consultaRepository;
+        _context = context;
+    }
 
-        public ConsultaService(IConsultaRepository consultaRepository)
-        {
-            _consultaRepository = consultaRepository;
-        }
+    public async Task<IEnumerable<Consulta>> GetAllConsultasAsync()
+    {
+        return await _context.Consultas.Include(c => c.Paciente).Include(c => c.Medico).ToListAsync();
+    }
 
-        public async Task<IEnumerable<Consulta>> ObterTodasConsultasAsync()
-        {
-            return await _consultaRepository.ObterTodosAsync();
-        }
+    public async Task<Consulta?> GetConsultaByIdAsync(int id)
+    {
+        return await _context.Consultas.Include(c => c.Paciente).Include(c => c.Medico).FirstOrDefaultAsync(c => c.IdConsulta == id);
+    }
 
-        public async Task<Consulta?> ObterConsultaPorIdAsync(int id)
-        {
-            return await _consultaRepository.ObterPorIdAsync(id);
-        }
+    public async Task CreateConsultaAsync(Consulta consulta)
+    {
+        _context.Consultas.Add(consulta);
+        await _context.SaveChangesAsync();
+    }
 
-        public async Task<Consulta> CriarConsultaAsync(Consulta consulta)
-        {
-            return await _consultaRepository.CriarConsultaAsync(consulta);
-        }
+    public async Task UpdateConsultaAsync(Consulta consulta)
+    {
+        _context.Entry(consulta).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
 
-        public async Task<Consulta> AtualizarConsultaAsync(Consulta consulta)
+    public async Task DeleteConsultaAsync(int id)
+    {
+        var consulta = await _context.Consultas.FindAsync(id);
+        if (consulta != null)
         {
-            return await _consultaRepository.AtualizarConsultaAsync(consulta);
-        }
-
-        public async Task<bool> DeletarConsultaAsync(int id)
-        {
-            return await _consultaRepository.DeletarConsultaAsync(id);
+            _context.Consultas.Remove(consulta);
+            await _context.SaveChangesAsync();
         }
     }
 }
-
