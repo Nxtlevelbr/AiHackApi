@@ -7,17 +7,19 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Configurar string de conexão
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+string? connectionString = builder.Configuration.GetConnectionString("OracleConnection");
 
 // Verificar se a string de conexão não é nula ou vazia
 if (string.IsNullOrEmpty(connectionString))
 {
-    throw new InvalidOperationException("A string de conexão 'DefaultConnection' não foi encontrada no appsettings.json.");
+    throw new InvalidOperationException("A string de conexão 'OracleConnection' não foi encontrada no appsettings.json.");
 }
 
 // 2. Registrar o ApplicationDbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseOracle(connectionString));
+{
+    options.UseOracle(connectionString);
+});
 
 // 3. Registrar Controladores
 builder.Services.AddControllers();

@@ -9,10 +9,10 @@ namespace AiHackApi.Data
         {
         }
 
-        // Defina o DbSet para Pacientes
+        // Definir o DbSet para Pacientes
         public DbSet<Paciente> Pacientes { get; set; }
 
-        // Defina outros DbSets para outras entidades (Ex: Medicos, Consultas, etc.)
+        // Definir outros DbSets para outras entidades (Ex: Medicos, Consultas, etc.)
         public DbSet<Medico> Medicos { get; set; }
         public DbSet<Consulta> Consultas { get; set; }
         public DbSet<Especialidade> Especialidades { get; set; }
@@ -20,16 +20,15 @@ namespace AiHackApi.Data
         public DbSet<Bairro> Bairros { get; set; }
         public DbSet<Contato> Contatos { get; set; }
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Medico>(entity =>
             {
                 entity.Property(e => e.SalarioMedico)
-                    .HasPrecision(18, 2); // Define a precisão (18 dígitos no total) e escala (2 casas decimais)
+                    .HasPrecision(18, 2); // Define a precisão e escala para SalarioMedico
             });
 
             base.OnModelCreating(modelBuilder);
         }
-
     }
 }

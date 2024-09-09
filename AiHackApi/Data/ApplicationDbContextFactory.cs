@@ -14,11 +14,11 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
             .AddJsonFile("appsettings.json")
             .Build();
 
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        // Usar a string de conexão OracleConnection
+        var connectionString = configuration.GetConnectionString("OracleConnection");
         optionsBuilder.UseOracle(connectionString);
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }
 }
-
 
