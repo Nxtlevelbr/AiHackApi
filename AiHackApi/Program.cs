@@ -18,7 +18,7 @@ if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("A string de conexão 'OracleConnection' não foi encontrada no appsettings.json.");
 }
 
-// Registrar o ApplicationDbContext
+// Registra o ApplicationDbContext
 //configura o DbContext para usar Oracle com a string de conexão configurada
 //tempo limite de comando de 60 segundos para evitar travamentos em consultas longas
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
