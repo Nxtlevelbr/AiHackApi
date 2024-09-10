@@ -41,5 +41,3 @@ public interface IPacienteRepository
     /// <returns>True se o paciente foi deletado com sucesso, caso contrário False.</returns>
     Task<bool> DeletarAsync(int id);
 }
-}
-

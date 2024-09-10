@@ -1,38 +1,39 @@
-﻿using System.ComponentModel.DataAnnotations;  // Importa as anotações de validação de dados
-using System.ComponentModel.DataAnnotations.Schema;  // Importa a capacidade de definir a estrutura da tabela no banco de dados
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AiHackApi.Models
 {
-    // Especifica que esta classe está mapeada para a tabela "tb_pacientes"
+    // Define a tabela "tb_pacientes" no banco de dados para esta classe
     [Table("tb_pacientes")]
     public class Paciente
     {
-        // Define a propriedade IdPaciente como chave primária da tabela
+        // Define a propriedade IdPaciente como chave primária
         [Key]
-        [Column("id_paciente")]
+        [Column("id_paciente")] // Mapeia a coluna "id_paciente" no banco de dados
         public int IdPaciente { get; set; }
 
-        // Campo obrigatório para o nome do paciente, mapeado para a coluna "nome_paciente"
-        [Required(ErrorMessage = "O nome do paciente é obrigatório.")]
-        [Column("nome_paciente")]
+        // Define a propriedade NomePaciente como campo obrigatório
+        [Required] // O campo é obrigatório
+        [Column("nome_paciente")] // Mapeia a coluna "nome_paciente" no banco de dados
         public string NomePaciente { get; set; }
 
-        // Campo obrigatório para o CPF do paciente, mapeado para a coluna "cpf"
-        [Required(ErrorMessage = "O CPF é obrigatório.")]
-        [Column("cpf")]
-        [StringLength(11, ErrorMessage = "O CPF deve ter 11 caracteres.")]
+        // Define a propriedade CPF como campo obrigatório
+        [Required] // O campo é obrigatório
+        [Column("cpf")] // Mapeia a coluna "cpf" no banco de dados
         public string CPF { get; set; }
 
         // Construtor que assegura que os campos obrigatórios têm valores válidos
         public Paciente(string nomePaciente, string cpf)
         {
-            // Validação nula para evitar que campos obrigatórios fiquem sem valor
             NomePaciente = nomePaciente ?? throw new ArgumentNullException(nameof(nomePaciente));
             CPF = cpf ?? throw new ArgumentNullException(nameof(cpf));
         }
 
-        // Construtor sem parâmetros, útil para a serialização/deserialização e outros cenários
+        // Construtor sem parâmetros, inicializando valores padrão
         public Paciente()
         {
-            // Inicializa campos com valores padrão
-
+            NomePaciente = string.Empty; // Inicializa NomePaciente como string vazia
+            CPF = string.Empty; // Inicializa CPF como string vazia
+        }
+    }
+}
