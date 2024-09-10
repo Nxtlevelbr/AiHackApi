@@ -1,18 +1,20 @@
-﻿using AiHackApi.DTOs;
-using AiHackApi.Models;
-using AiHackApi.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿// Importações necessárias para o funcionamento do controlador
+using AiHackApi.DTOs; // DTOs (Data Transfer Objects) usados para transferência de dados entre o cliente e a API
+using AiHackApi.Models; // Modelos de entidades da aplicação
+using AiHackApi.Services; // Serviços que contêm a lógica de negócio
+using Microsoft.AspNetCore.Mvc; // Bibliotecas essenciais para criar APIs em ASP.NET Core
+using System.Collections.Generic; // Para trabalhar com listas genéricas
+using System.Threading.Tasks; // Para operações assíncronas
 
 namespace AiHackApi.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController] // Indica que esta classe é um controlador de API
+    [Route("api/[controller]")] // Define a rota para os endpoints (ex: api/Paciente)
     public class PacienteController : ControllerBase
     {
-        private readonly IPacienteService _pacienteService;
+        private readonly IPacienteService _pacienteService; // Campo privado para o serviço de pacientes
 
+        // Construtor que injeta o serviço de paciente
         public PacienteController(IPacienteService pacienteService)
         {
             _pacienteService = pacienteService;
@@ -21,10 +23,11 @@ namespace AiHackApi.Controllers
         /// <summary>
         /// Lista todos os pacientes cadastrados.
         /// </summary>
-        /// <returns>Uma lista de pacientes.</returns>
-        [HttpGet]
+        /// <returns>Uma lista de objetos PacienteDto.</returns>
+        [HttpGet] // Método responde a requisições HTTP GET
         public async Task<IEnumerable<PacienteDto>> GetPacientes()
         {
+            // Chama o serviço para obter todos os pacientes e retorna a lista
             return await _pacienteService.GetAllPacientesAsync();
         }
 
@@ -32,15 +35,20 @@ namespace AiHackApi.Controllers
         /// Obtém um paciente específico pelo ID.
         /// </summary>
         /// <param name="id">O ID do paciente.</param>
-        /// <returns>O paciente correspondente ao ID informado.</returns>
-        [HttpGet("{id}")]
+        /// <returns>O objeto PacienteDto correspondente ao ID fornecido.</returns>
+        [HttpGet("{id}")] // Método responde a GET com um ID na URL (ex: api/Paciente/1)
         public async Task<ActionResult<PacienteDto>> GetPacienteById(int id)
         {
+            // Chama o serviço para obter o paciente pelo ID
             var paciente = await _pacienteService.GetPacienteByIdAsync(id);
+
+            // Se o paciente não for encontrado, retorna 404
             if (paciente == null)
             {
-                return NotFound();
+                return NotFound(); // Retorna 404 Not Found
             }
+
+            // Retorna 200 OK com os dados do paciente
             return Ok(paciente);
         }
 
@@ -49,10 +57,13 @@ namespace AiHackApi.Controllers
         /// </summary>
         /// <param name="pacienteDto">Objeto com os dados do paciente a ser criado.</param>
         /// <returns>O paciente recém-criado.</returns>
-        [HttpPost]
+        [HttpPost] // Método responde a requisições HTTP POST para criação de recursos
         public async Task<ActionResult> CreatePaciente([FromBody] PacienteDto pacienteDto)
         {
+            // Chama o serviço para criar o novo paciente
             await _pacienteService.CreatePacienteAsync(pacienteDto);
+
+            // Retorna 201 Created com a URL para acessar o paciente recém-criado
             return CreatedAtAction(nameof(GetPacienteById), new { id = pacienteDto.IdPaciente }, pacienteDto);
         }
 
@@ -62,15 +73,19 @@ namespace AiHackApi.Controllers
         /// <param name="id">O ID do paciente a ser atualizado.</param>
         /// <param name="pacienteDto">Objeto com os dados atualizados do paciente.</param>
         /// <returns>Resposta vazia se a atualização for bem-sucedida.</returns>
-        [HttpPut("{id}")]
+        [HttpPut("{id}")] // Método responde a HTTP PUT com um ID na URL
         public async Task<IActionResult> UpdatePaciente(int id, [FromBody] PacienteDto pacienteDto)
         {
+            // Verifica se o ID da URL corresponde ao ID do objeto paciente
             if (id != pacienteDto.IdPaciente)
             {
-                return BadRequest();
+                return BadRequest(); // Retorna 400 Bad Request se os IDs não coincidirem
             }
 
+            // Chama o serviço para atualizar o paciente
             await _pacienteService.UpdatePacienteAsync(pacienteDto);
+
+            // Retorna 204 No Content se a atualização for bem-sucedida
             return NoContent();
         }
 
@@ -79,16 +94,22 @@ namespace AiHackApi.Controllers
         /// </summary>
         /// <param name="id">O ID do paciente a ser excluído.</param>
         /// <returns>Resposta vazia se a exclusão for bem-sucedida.</returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // Método responde a HTTP DELETE com um ID na URL
         public async Task<IActionResult> DeletePaciente(int id)
         {
+            // Chama o serviço para obter o paciente pelo ID
             var paciente = await _pacienteService.GetPacienteByIdAsync(id);
+
+            // Se o paciente não for encontrado, retorna 404
             if (paciente == null)
             {
-                return NotFound();
+                return NotFound(); // Retorna 404 Not Found se o paciente não existir
             }
 
+            // Chama o serviço para excluir o paciente
             await _pacienteService.DeletePacienteAsync(id);
+
+            // Retorna 204 No Content se a exclusão for bem-sucedida
             return NoContent();
         }
     }
