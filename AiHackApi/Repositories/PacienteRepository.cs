@@ -30,13 +30,13 @@ namespace AiHackApi.Repositories
             return paciente; // Retorna o paciente adicionado
         }
 
-        // Método para buscar um paciente pelo ID de forma assíncrona
-        public async Task<Paciente> ObterPorIdAsync(int id)
+        // Método para buscar um paciente pelo CPF de forma assíncrona
+        public async Task<Paciente> ObterPorCpfAsync(string cpf)
         {
-            var paciente = await _context.Pacientes.FindAsync(id); // Busca o paciente pelo ID
+            var paciente = await _context.Pacientes.FirstOrDefaultAsync(p => p.CPF == cpf); // Busca o paciente pelo CPF
             if (paciente == null)
             {
-                throw new NotFoundException($"Paciente com ID {id} não encontrado."); // Lança exceção se o paciente não for encontrado
+                throw new NotFoundException($"Paciente com CPF {cpf} não encontrado."); // Lança exceção se o paciente não for encontrado
             }
             return paciente; // Retorna o paciente encontrado
         }
@@ -58,10 +58,10 @@ namespace AiHackApi.Repositories
                 throw new ArgumentNullException(nameof(paciente)); // Verifica se o paciente é nulo
             }
 
-            var existingPaciente = await ObterPorIdAsync(paciente.IdPaciente); // Verifica se o paciente existe
+            var existingPaciente = await ObterPorCpfAsync(paciente.CPF); // Verifica se o paciente existe pelo CPF
             if (existingPaciente == null)
             {
-                throw new NotFoundException($"Paciente com ID {paciente.IdPaciente} não encontrado.");
+                throw new NotFoundException($"Paciente com CPF {paciente.CPF} não encontrado.");
             }
 
             _context.Entry(paciente).State = EntityState.Modified; // Marca a entidade como modificada
@@ -70,9 +70,9 @@ namespace AiHackApi.Repositories
         }
 
         // Método para excluir um paciente de forma assíncrona
-        public async Task<bool> DeletarAsync(int id)
+        public async Task<bool> DeletarAsync(string cpf)
         {
-            var paciente = await ObterPorIdAsync(id); // Busca o paciente pelo ID
+            var paciente = await ObterPorCpfAsync(cpf); // Busca o paciente pelo CPF
             if (paciente == null)
             {
                 return false; // Retorna false se o paciente não for encontrado
@@ -84,4 +84,3 @@ namespace AiHackApi.Repositories
         }
     }
 }
-

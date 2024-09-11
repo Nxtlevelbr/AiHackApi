@@ -15,11 +15,11 @@ public interface IPacienteRepository
     Task<Paciente> AdicionarAsync(Paciente paciente);
 
     /// <summary>
-    /// Obtém os detalhes de um paciente específico pelo ID.
+    /// Obtém os detalhes de um paciente específico pelo CPF.
     /// </summary>
-    /// <param name="id">O ID do paciente.</param>
-    /// <returns>O paciente correspondente ao ID informado.</returns>
-    Task<Paciente> ObterPorIdAsync(int id);
+    /// <param name="cpf">O CPF do paciente.</param>
+    /// <returns>O paciente correspondente ao CPF informado.</returns>
+    Task<Paciente> ObterPorCpfAsync(string cpf);
 
     /// <summary>
     /// Retorna todos os pacientes cadastrados no banco de dados.
@@ -35,9 +35,9 @@ public interface IPacienteRepository
     Task<Paciente> AtualizarAsync(Paciente paciente);
 
     /// <summary>
-    /// Remove um paciente do banco de dados usando o ID.
+    /// Remove um paciente do banco de dados usando o CPF.
     /// </summary>
-    /// <param name="id">O ID do paciente a ser deletado.</param>
+    /// <param name="cpf">O CPF do paciente a ser deletado.</param>
     /// <returns>True se o paciente foi deletado com sucesso, caso contrário False.</returns>
-    Task<bool> DeletarAsync(int id);
+    Task<bool> DeletarAsync(string cpf);
 }

@@ -1,5 +1,4 @@
-﻿// Importação do Entity Framework Core para uso de DbContext e manipulação de dados
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;// Importação do Entity Framework Core para uso de DbContext e manipulação de dados
 using AiHackApi.Models; // Importa os modelos de entidades do projeto
 
 namespace AiHackApi.Data
@@ -14,7 +13,6 @@ namespace AiHackApi.Data
         }
 
         // DbSet representa uma coleção de entidades do tipo Paciente no banco de dados.
-        // O Entity Framework vai criar a tabela Pacientes e mapear as propriedades de Paciente para as colunas dessa tabela.
         public DbSet<Paciente> Pacientes { get; set; }
 
         // Definindo outros DbSets para mapear as entidades relacionadas a outras tabelas do banco de dados.
@@ -28,11 +26,12 @@ namespace AiHackApi.Data
         // Método OnModelCreating é usado para customizar o comportamento do Entity Framework ao criar o modelo de dados.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Remover a configuração para SalarioMedico, pois não faz mais parte da entidade Medico
-            modelBuilder.Entity<Medico>(entity =>
+            // Configuração da chave primária do Paciente
+            modelBuilder.Entity<Paciente>(entity =>
             {
-                // Se necessário, adicione qualquer configuração adicional para CrmMedico aqui.
-                // entity.HasKey(e => e.CrmMedico); // Isso é automático, mas pode ser configurado explicitamente se necessário.
+                entity.HasKey(e => e.CPF); // Define CPF como chave primária
+                entity.Property(e => e.CPF).IsRequired(); // Certifica que CPF é obrigatório
+                entity.Property(e => e.NomePaciente).IsRequired(); // Certifica que o NomePaciente é obrigatório
             });
 
             // Chamando o método base para garantir que outras configurações padrão sejam aplicadas.

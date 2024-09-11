@@ -40,15 +40,15 @@ namespace AiHackApi.Controllers
         }
 
         /// <summary>
-        /// Obtém um paciente específico pelo ID.
+        /// Obtém um paciente específico pelo CPF.
         /// </summary>
-        /// <param name="id">O ID do paciente.</param>
-        /// <returns>O objeto PacienteDto correspondente ao ID fornecido.</returns>
-        [HttpGet("{id}")] // Método responde a GET com um ID na URL (ex: api/Paciente/1)
-        public async Task<ActionResult<PacienteDto>> GetPacienteById(int id)
+        /// <param name="cpf">O CPF do paciente.</param>
+        /// <returns>O objeto PacienteDto correspondente ao CPF fornecido.</returns>
+        [HttpGet("{cpf}")] // Método responde a GET com o CPF na URL (ex: api/Paciente/12345678900)
+        public async Task<ActionResult<PacienteDto>> GetPacienteByCpf(string cpf)
         {
-            // Chama o serviço para obter o paciente pelo ID
-            var paciente = await _pacienteService.GetPacienteByIdAsync(id);
+            // Chama o serviço para obter o paciente pelo CPF
+            var paciente = await _pacienteService.GetPacienteByCpfAsync(cpf);
 
             // Se o paciente não for encontrado, retorna 404
             if (paciente == null)
@@ -71,22 +71,22 @@ namespace AiHackApi.Controllers
             await _pacienteService.CreatePacienteAsync(pacienteDto);
 
             // Retorna 201 Created com a URL para acessar o paciente recém-criado
-            return CreatedAtAction(nameof(GetPacienteById), new { id = pacienteDto.IdPaciente }, pacienteDto);
+            return CreatedAtAction(nameof(GetPacienteByCpf), new { cpf = pacienteDto.CPF }, pacienteDto);
         }
 
         /// <summary>
         /// Atualiza os dados de um paciente existente.
         /// </summary>
-        /// <param name="id">O ID do paciente a ser atualizado.</param>
+        /// <param name="cpf">O CPF do paciente a ser atualizado.</param>
         /// <param name="pacienteDto">Objeto com os dados atualizados do paciente.</param>
         /// <returns>Resposta vazia se a atualização for bem-sucedida.</returns>
-        [HttpPut("{id}")] // Método responde a HTTP PUT com um ID na URL
-        public async Task<IActionResult> UpdatePaciente(int id, [FromBody] PacienteDto pacienteDto)
+        [HttpPut("{cpf}")] // Método responde a HTTP PUT com um CPF na URL
+        public async Task<IActionResult> UpdatePaciente(string cpf, [FromBody] PacienteDto pacienteDto)
         {
-            // Verifica se o ID da URL corresponde ao ID do objeto paciente
-            if (id != pacienteDto.IdPaciente)
+            // Verifica se o CPF da URL corresponde ao CPF do objeto paciente
+            if (cpf != pacienteDto.CPF)
             {
-                return BadRequest(new { message = "O ID informado não corresponde ao paciente." }); // Retorna 400 Bad Request se os IDs não coincidirem
+                return BadRequest(new { message = "O CPF informado não corresponde ao paciente." }); // Retorna 400 Bad Request se os CPFs não coincidirem
             }
 
             // Chama o serviço para atualizar o paciente
@@ -96,15 +96,15 @@ namespace AiHackApi.Controllers
         }
 
         /// <summary>
-        /// Exclui um paciente pelo ID.
+        /// Exclui um paciente pelo CPF.
         /// </summary>
-        /// <param name="id">O ID do paciente a ser excluído.</param>
+        /// <param name="cpf">O CPF do paciente a ser excluído.</param>
         /// <returns>Resposta vazia se a exclusão for bem-sucedida.</returns>
-        [HttpDelete("{id}")] // Método responde a HTTP DELETE com um ID na URL
-        public async Task<IActionResult> DeletePaciente(int id)
+        [HttpDelete("{cpf}")] // Método responde a HTTP DELETE com um CPF na URL
+        public async Task<IActionResult> DeletePaciente(string cpf)
         {
             // Chama o serviço para verificar se o paciente existe
-            var paciente = await _pacienteService.GetPacienteByIdAsync(id);
+            var paciente = await _pacienteService.GetPacienteByCpfAsync(cpf);
 
             // Se o paciente não for encontrado, retorna 404
             if (paciente == null)
@@ -113,7 +113,7 @@ namespace AiHackApi.Controllers
             }
 
             // Chama o serviço para excluir o paciente
-            await _pacienteService.DeletePacienteAsync(id);
+            await _pacienteService.DeletePacienteAsync(cpf);
 
             return NoContent(); // Retorna 204 No Content se a exclusão for bem-sucedida
         }

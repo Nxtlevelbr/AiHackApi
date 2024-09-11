@@ -5,9 +5,6 @@ namespace AiHackApi.DTOs
     // entre diferentes camadas da aplicação.
     public class PacienteDto
     {
-        // Propriedade que representa o ID do paciente
-        public int IdPaciente { get; set; }
-
         // Propriedade que armazena o nome do paciente
         public string NomePaciente { get; set; }
 
@@ -15,11 +12,8 @@ namespace AiHackApi.DTOs
         public string CPF { get; set; }
 
         // Construtor que inicializa o DTO com valores específicos
-        public PacienteDto(int idPaciente, string nomePaciente, string cpf)
+        public PacienteDto(string nomePaciente, string cpf)
         {
-            // Inicializa o ID do paciente
-            IdPaciente = idPaciente;
-
             // Verifica se o nome do paciente é nulo e lança uma exceção se for
             NomePaciente = nomePaciente ?? throw new ArgumentNullException(nameof(nomePaciente));
 
@@ -38,4 +32,3 @@ namespace AiHackApi.DTOs
         }
     }
 }
-

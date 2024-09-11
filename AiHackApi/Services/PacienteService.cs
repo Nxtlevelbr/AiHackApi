@@ -1,7 +1,4 @@
 ﻿// Importa classes e namespaces necessários para o funcionamento da aplicação.
-// AiHackApi.DTOs: Contém os Data Transfer Objects (DTOs) usados para transferir dados entre camadas.
-// AiHackApi.Models: Contém as definições dos modelos de dados, como Paciente.
-// AiHackApi.Repositories: Contém as definições do repositório para acesso aos dados, como IPacienteRepository.
 using AiHackApi.DTOs;
 using AiHackApi.Models;
 using AiHackApi.Repositories;
@@ -17,21 +14,20 @@ namespace AiHackApi.Services
         private readonly IPacienteRepository _pacienteRepository;
 
         // Construtor que recebe uma instância de IPacienteRepository para acesso aos dados.
-        // Isso permite a injeção de dependências e facilita o teste da classe.
         public PacienteService(IPacienteRepository pacienteRepository)
         {
             _pacienteRepository = pacienteRepository;
         }
 
         /// <summary>
-        /// Obtém um paciente específico pelo seu identificador e o retorna como um DTO.
+        /// Obtém um paciente específico pelo CPF e o retorna como um DTO.
         /// </summary>
-        /// <param name="id">O identificador do paciente.</param>
-        /// <returns>A tarefa que representa a operação assíncrona. O resultado é um <see cref="PacienteDto"/> correspondente ao identificador fornecido.</returns>
+        /// <param name="cpf">O CPF do paciente.</param>
+        /// <returns>A tarefa que representa a operação assíncrona. O resultado é um <see cref="PacienteDto"/> correspondente ao CPF fornecido.</returns>
         /// <exception cref="KeyNotFoundException">Lançado se o paciente não for encontrado.</exception>
-        public async Task<PacienteDto> GetPacienteByIdAsync(int id)
+        public async Task<PacienteDto> GetPacienteByCpfAsync(string cpf)
         {
-            var paciente = await _pacienteRepository.ObterPorIdAsync(id);
+            var paciente = await _pacienteRepository.ObterPorCpfAsync(cpf);
             if (paciente == null)
             {
                 throw new KeyNotFoundException("Paciente não encontrado.");
@@ -39,9 +35,8 @@ namespace AiHackApi.Services
             // Converte o modelo de dados Paciente para um PacienteDto
             return new PacienteDto
             {
-                IdPaciente = paciente.IdPaciente,
-                NomePaciente = paciente.NomePaciente,
-                CPF = paciente.CPF
+                CPF = paciente.CPF,
+                NomePaciente = paciente.NomePaciente
             };
         }
 
@@ -55,9 +50,8 @@ namespace AiHackApi.Services
             // Converte a coleção de modelos de dados Paciente para uma coleção de PacienteDto
             return pacientes.Select(p => new PacienteDto
             {
-                IdPaciente = p.IdPaciente,
-                NomePaciente = p.NomePaciente,
-                CPF = p.CPF
+                CPF = p.CPF,
+                NomePaciente = p.NomePaciente
             });
         }
 
@@ -70,9 +64,8 @@ namespace AiHackApi.Services
         {
             var paciente = new Paciente
             {
-                IdPaciente = pacienteDto.IdPaciente,
-                NomePaciente = pacienteDto.NomePaciente,
-                CPF = pacienteDto.CPF
+                CPF = pacienteDto.CPF,
+                NomePaciente = pacienteDto.NomePaciente
             };
             await _pacienteRepository.AdicionarAsync(paciente);
         }
@@ -85,32 +78,31 @@ namespace AiHackApi.Services
         /// <exception cref="KeyNotFoundException">Lançado se o paciente não for encontrado.</exception>
         public async Task UpdatePacienteAsync(PacienteDto pacienteDto)
         {
-            var paciente = await _pacienteRepository.ObterPorIdAsync(pacienteDto.IdPaciente);
+            var paciente = await _pacienteRepository.ObterPorCpfAsync(pacienteDto.CPF);
             if (paciente == null)
             {
                 throw new KeyNotFoundException("Paciente não encontrado.");
             }
             // Atualiza as informações do paciente com base no DTO
             paciente.NomePaciente = pacienteDto.NomePaciente;
-            paciente.CPF = pacienteDto.CPF;
 
             await _pacienteRepository.AtualizarAsync(paciente);
         }
 
         /// <summary>
-        /// Remove um paciente do repositório pelo seu identificador.
+        /// Remove um paciente do repositório pelo seu CPF.
         /// </summary>
-        /// <param name="id">O identificador do paciente a ser removido.</param>
+        /// <param name="cpf">O CPF do paciente a ser removido.</param>
         /// <returns>A tarefa que representa a operação assíncrona.</returns>
         /// <exception cref="KeyNotFoundException">Lançado se o paciente não for encontrado.</exception>
-        public async Task DeletePacienteAsync(int id)
+        public async Task DeletePacienteAsync(string cpf)
         {
-            var paciente = await _pacienteRepository.ObterPorIdAsync(id);
+            var paciente = await _pacienteRepository.ObterPorCpfAsync(cpf);
             if (paciente == null)
             {
                 throw new KeyNotFoundException("Paciente não encontrado.");
             }
-            await _pacienteRepository.DeletarAsync(id);
+            await _pacienteRepository.DeletarAsync(cpf);
         }
     }
 }
