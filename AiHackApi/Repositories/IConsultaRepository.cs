@@ -17,11 +17,13 @@ namespace AiHackApi.Repositories
         Task<Consulta> CriarConsultaAsync(Consulta consulta);
 
         /// <summary>
-        /// Busca uma consulta pelo ID.
+        /// Busca uma consulta pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
         /// </summary>
-        /// <param name="id">O ID da consulta a ser buscada.</param>
-        /// <returns>A consulta correspondente ao ID informado.</returns>
-        Task<Consulta> ObterPorIdAsync(int id);
+        /// <param name="dataHoraConsulta">A data e hora da consulta.</param>
+        /// <param name="cpfPaciente">O CPF do paciente.</param>
+        /// <param name="idMedico">O ID do médico.</param>
+        /// <returns>A consulta correspondente à chave composta fornecida.</returns>
+        Task<Consulta> ObterPorChaveAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico);
 
         /// <summary>
         /// Retorna todas as consultas cadastradas.
@@ -37,11 +39,12 @@ namespace AiHackApi.Repositories
         Task<Consulta> AtualizarConsultaAsync(Consulta consulta);
 
         /// <summary>
-        /// Deleta uma consulta pelo ID.
+        /// Deleta uma consulta pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
         /// </summary>
-        /// <param name="id">O ID da consulta a ser deletada.</param>
+        /// <param name="dataHoraConsulta">A data e hora da consulta a ser deletada.</param>
+        /// <param name="cpfPaciente">O CPF do paciente da consulta a ser deletada.</param>
+        /// <param name="idMedico">O ID do médico da consulta a ser deletada.</param>
         /// <returns>True se a consulta foi deletada com sucesso, caso contrário False.</returns>
-        Task<bool> DeletarConsultaAsync(int id);
+        Task<bool> DeletarConsultaAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico);
     }
 }
-

@@ -15,11 +15,13 @@ public interface IConsultaService
     Task<IEnumerable<Consulta>> GetAllConsultasAsync();
 
     /// <summary>
-    /// Obtém uma consulta específica pelo seu identificador.
+    /// Obtém uma consulta específica pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
     /// </summary>
-    /// <param name="id">O identificador da consulta.</param>
-    /// <returns>A tarefa que representa a operação assíncrona. O resultado é a consulta correspondente ao identificador, ou null se não for encontrada.</returns>
-    Task<Consulta?> GetConsultaByIdAsync(int id);
+    /// <param name="dataHoraConsulta">A data e hora da consulta.</param>
+    /// <param name="cpfPaciente">O CPF do paciente.</param>
+    /// <param name="idMedico">O ID do médico.</param>
+    /// <returns>A tarefa que representa a operação assíncrona. O resultado é a consulta correspondente à chave composta ou null se não for encontrada.</returns>
+    Task<Consulta?> GetConsultaByIdAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico);
 
     /// <summary>
     /// Cria uma nova consulta e a adiciona ao repositório.
@@ -36,9 +38,11 @@ public interface IConsultaService
     Task UpdateConsultaAsync(Consulta consulta);
 
     /// <summary>
-    /// Remove uma consulta do repositório pelo seu identificador.
+    /// Remove uma consulta do repositório pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
     /// </summary>
-    /// <param name="id">O identificador da consulta a ser removida.</param>
+    /// <param name="dataHoraConsulta">A data e hora da consulta a ser removida.</param>
+    /// <param name="cpfPaciente">O CPF do paciente da consulta a ser removida.</param>
+    /// <param name="idMedico">O ID do médico da consulta a ser removida.</param>
     /// <returns>A tarefa que representa a operação assíncrona.</returns>
-    Task DeleteConsultaAsync(int id);
+    Task DeleteConsultaAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico);
 }

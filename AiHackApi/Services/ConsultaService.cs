@@ -35,14 +35,21 @@ public class ConsultaService : IConsultaService
     }
 
     /// <summary>
-    /// Obtém uma consulta específica pelo seu identificador.
+    /// Obtém uma consulta específica pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
     /// </summary>
-    /// <param name="id">O identificador da consulta.</param>
-    /// <returns>A consulta correspondente ao identificador ou null se não for encontrada.</returns>
-    public async Task<Consulta?> GetConsultaByIdAsync(int id)
+    /// <param name="dataHoraConsulta">A data e hora da consulta.</param>
+    /// <param name="cpfPaciente">O CPF do paciente.</param>
+    /// <param name="idMedico">O ID do médico.</param>
+    /// <returns>A consulta correspondente à chave composta ou null se não for encontrada.</returns>
+    public async Task<Consulta?> GetConsultaByIdAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico)
     {
-        // Recupera uma consulta pelo identificador, incluindo informações de pacientes e médicos.
-        return await _context.Consultas.Include(c => c.Paciente).Include(c => c.Medico).FirstOrDefaultAsync(c => c.IdConsulta == id);
+        // Recupera uma consulta pela chave composta, incluindo informações de pacientes e médicos.
+        return await _context.Consultas
+            .Include(c => c.Paciente)
+            .Include(c => c.Medico)
+            .FirstOrDefaultAsync(c => c.DataHoraConsulta == dataHoraConsulta
+                                    && c.CpfPaciente == cpfPaciente
+                                    && c.TbMedicosIdMedico == idMedico);
     }
 
     /// <summary>
@@ -68,13 +75,15 @@ public class ConsultaService : IConsultaService
     }
 
     /// <summary>
-    /// Remove uma consulta do banco de dados pelo seu identificador.
+    /// Remove uma consulta do banco de dados pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
     /// </summary>
-    /// <param name="id">O identificador da consulta a ser removida.</param>
-    public async Task DeleteConsultaAsync(int id)
+    /// <param name="dataHoraConsulta">A data e hora da consulta.</param>
+    /// <param name="cpfPaciente">O CPF do paciente.</param>
+    /// <param name="idMedico">O ID do médico da consulta.</param>
+    public async Task DeleteConsultaAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico)
     {
-        // Encontra a consulta pelo identificador e a remove do banco de dados, se existir.
-        var consulta = await _context.Consultas.FindAsync(id);
+        // Encontra a consulta pela chave composta e a remove do banco de dados, se existir.
+        var consulta = await GetConsultaByIdAsync(dataHoraConsulta, cpfPaciente, idMedico);
         if (consulta != null)
         {
             _context.Consultas.Remove(consulta);

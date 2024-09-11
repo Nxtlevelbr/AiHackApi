@@ -27,31 +27,34 @@ namespace AiHackApi.Repositories
         {
             if (consulta == null)
             {
-                // Lança exceção se o objeto Consulta for nulo
-                throw new ArgumentNullException(nameof(consulta));
+                throw new ArgumentNullException(nameof(consulta)); // Lança exceção se o objeto Consulta for nulo
             }
 
-            // Adiciona a nova consulta ao contexto do banco de dados
-            await _context.Consultas.AddAsync(consulta);
-            // Salva as alterações no banco de dados
-            await _context.SaveChangesAsync();
+            await _context.Consultas.AddAsync(consulta); // Adiciona a nova consulta ao contexto do banco de dados
+            await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
             return consulta; // Retorna a consulta criada
         }
 
         /// <summary>
-        /// Obtém uma consulta pelo seu ID.
+        /// Obtém uma consulta pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
         /// </summary>
-        /// <param name="id">ID da consulta a ser obtida.</param>
-        /// <returns>A consulta correspondente ao ID fornecido.</returns>
-        public async Task<Consulta> ObterPorIdAsync(int id)
+        /// <param name="dataHoraConsulta">Data e hora da consulta.</param>
+        /// <param name="cpfPaciente">CPF do paciente.</param>
+        /// <param name="idMedico">ID do médico.</param>
+        /// <returns>A consulta correspondente à chave composta fornecida.</returns>
+        public async Task<Consulta> ObterPorChaveAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico)
         {
-            // Busca a consulta pelo ID no banco de dados
-            var consulta = await _context.Consultas.FindAsync(id);
+            // Busca a consulta pela chave composta no banco de dados
+            var consulta = await _context.Consultas
+                .FirstOrDefaultAsync(c => c.DataHoraConsulta == dataHoraConsulta
+                                          && c.CpfPaciente == cpfPaciente
+                                          && c.TbMedicosIdMedico == idMedico);
+
             if (consulta == null)
             {
-                // Lança exceção personalizada se a consulta não for encontrada
-                throw new NotFoundException($"Consulta com ID {id} não encontrada.");
+                throw new NotFoundException($"Consulta não encontrada para DataHoraConsulta: {dataHoraConsulta}, CPF: {cpfPaciente}, ID do médico: {idMedico}.");
             }
+
             return consulta; // Retorna a consulta encontrada
         }
 
@@ -61,12 +64,11 @@ namespace AiHackApi.Repositories
         /// <returns>Uma lista de consultas.</returns>
         public async Task<IEnumerable<Consulta>> ObterTodosAsync()
         {
-            // Busca todas as consultas no banco de dados, sem rastreamento (AsNoTracking)
-            var consultas = await _context.Consultas.AsNoTracking().ToListAsync();
+            var consultas = await _context.Consultas.AsNoTracking().ToListAsync(); // Busca todas as consultas no banco de dados
+
             if (consultas == null || !consultas.Any())
             {
-                // Lança exceção se nenhuma consulta for encontrada
-                throw new NotFoundException("Nenhuma consulta encontrada.");
+                throw new NotFoundException("Nenhuma consulta encontrada."); // Lança exceção se nenhuma consulta for encontrada
             }
 
             return consultas; // Retorna a lista de consultas
@@ -81,44 +83,39 @@ namespace AiHackApi.Repositories
         {
             if (consulta == null)
             {
-                // Lança exceção se o objeto Consulta for nulo
-                throw new ArgumentNullException(nameof(consulta));
+                throw new ArgumentNullException(nameof(consulta)); // Lança exceção se o objeto Consulta for nulo
             }
 
-            // Verifica se a consulta existe pelo ID
-            var existingConsulta = await ObterPorIdAsync(consulta.IdConsulta);
+            // Verifica se a consulta existe pela chave composta
+            var existingConsulta = await ObterPorChaveAsync(consulta.DataHoraConsulta, consulta.CpfPaciente, consulta.TbMedicosIdMedico);
             if (existingConsulta == null)
             {
-                // Lança exceção se a consulta não for encontrada
-                throw new NotFoundException($"Consulta com ID {consulta.IdConsulta} não encontrada.");
+                throw new NotFoundException($"Consulta não encontrada para DataHoraConsulta: {consulta.DataHoraConsulta}, CPF: {consulta.CpfPaciente}, ID do médico: {consulta.TbMedicosIdMedico}.");
             }
 
-            // Marca a consulta como modificada e salva as alterações
-            _context.Entry(consulta).State = EntityState.Modified;
+            _context.Entry(consulta).State = EntityState.Modified; // Marca a consulta como modificada e salva as alterações
             await _context.SaveChangesAsync();
             return consulta; // Retorna a consulta atualizada
         }
 
         /// <summary>
-        /// Deleta uma consulta existente pelo ID.
+        /// Deleta uma consulta existente pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
         /// </summary>
-        /// <param name="id">ID da consulta a ser deletada.</param>
+        /// <param name="dataHoraConsulta">Data e hora da consulta.</param>
+        /// <param name="cpfPaciente">CPF do paciente.</param>
+        /// <param name="idMedico">ID do médico.</param>
         /// <returns>Booleano indicando sucesso ou falha da exclusão.</returns>
-        public async Task<bool> DeletarConsultaAsync(int id)
+        public async Task<bool> DeletarConsultaAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico)
         {
-            // Busca a consulta pelo ID
-            var consulta = await ObterPorIdAsync(id);
+            var consulta = await ObterPorChaveAsync(dataHoraConsulta, cpfPaciente, idMedico); // Busca a consulta pela chave composta
             if (consulta == null)
             {
-                // Lança exceção se a consulta não for encontrada
-                throw new NotFoundException($"Consulta com ID {id} não encontrada.");
+                return false; // Retorna false se a consulta não for encontrada
             }
 
-            // Remove a consulta do contexto e salva as alterações
-            _context.Consultas.Remove(consulta);
-            await _context.SaveChangesAsync();
+            _context.Consultas.Remove(consulta); // Remove a consulta do contexto
+            await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
             return true; // Indica que a exclusão foi bem-sucedida
         }
     }
 }
-

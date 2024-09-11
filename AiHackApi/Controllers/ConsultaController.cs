@@ -31,15 +31,17 @@ namespace AiHackApi.Controllers
         }
 
         /// <summary>
-        /// Obtém uma consulta específica pelo ID.
+        /// Obtém uma consulta específica com base na chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
         /// </summary>
-        /// <param name="id">O ID da consulta.</param>
-        /// <returns>A consulta correspondente ao ID informado.</returns>
-        [HttpGet("{id}")] // Define que este método responde a requisições GET com um ID na URL (ex: api/Consulta/1)
-        public async Task<ActionResult<Consulta>> GetConsultaById(int id)
+        /// <param name="dataHoraConsulta">A data e hora da consulta.</param>
+        /// <param name="cpfPaciente">O CPF do paciente.</param>
+        /// <param name="idMedico">O ID do médico.</param>
+        /// <returns>A consulta correspondente aos parâmetros fornecidos.</returns>
+        [HttpGet("{dataHoraConsulta}/{cpfPaciente}/{idMedico}")] // Define que este método responde a GET com a chave composta na URL
+        public async Task<ActionResult<Consulta>> GetConsultaById(DateTime dataHoraConsulta, string cpfPaciente, int idMedico)
         {
-            // Usa o serviço para obter uma consulta específica pelo ID
-            var consulta = await _consultaService.GetConsultaByIdAsync(id);
+            // Usa o serviço para obter uma consulta específica pela chave composta
+            var consulta = await _consultaService.GetConsultaByIdAsync(dataHoraConsulta, cpfPaciente, idMedico);
 
             // Se a consulta não for encontrada, retorna um erro 404 (Not Found)
             if (consulta == null)
@@ -63,22 +65,29 @@ namespace AiHackApi.Controllers
             await _consultaService.CreateConsultaAsync(consulta);
 
             // Retorna 201 (Created) e a URL para acessar a consulta recém-criada
-            return CreatedAtAction(nameof(GetConsultaById), new { id = consulta.IdConsulta }, consulta);
+            return CreatedAtAction(nameof(GetConsultaById), new
+            {
+                dataHoraConsulta = consulta.DataHoraConsulta,
+                cpfPaciente = consulta.CpfPaciente,
+                idMedico = consulta.TbMedicosIdMedico
+            }, consulta);
         }
 
         /// <summary>
         /// Atualiza os dados de uma consulta existente.
         /// </summary>
-        /// <param name="id">O ID da consulta a ser atualizada.</param>
+        /// <param name="dataHoraConsulta">A data e hora da consulta a ser atualizada.</param>
+        /// <param name="cpfPaciente">O CPF do paciente a ser atualizado.</param>
+        /// <param name="idMedico">O ID do médico da consulta a ser atualizada.</param>
         /// <param name="consulta">Objeto com os dados atualizados da consulta.</param>
         /// <returns>Resposta vazia se a atualização for bem-sucedida.</returns>
-        [HttpPut("{id}")] // Define que este método responde a requisições HTTP PUT com um ID na URL
-        public async Task<IActionResult> UpdateConsulta(int id, [FromBody] Consulta consulta)
+        [HttpPut("{dataHoraConsulta}/{cpfPaciente}/{idMedico}")] // Define que este método responde a HTTP PUT com a chave composta na URL
+        public async Task<IActionResult> UpdateConsulta(DateTime dataHoraConsulta, string cpfPaciente, int idMedico, [FromBody] Consulta consulta)
         {
-            // Verifica se o ID informado na URL corresponde ao ID da consulta fornecida no corpo da requisição
-            if (id != consulta.IdConsulta)
+            // Verifica se os parâmetros fornecidos na URL correspondem aos dados da consulta fornecida no corpo da requisição
+            if (dataHoraConsulta != consulta.DataHoraConsulta || cpfPaciente != consulta.CpfPaciente || idMedico != consulta.TbMedicosIdMedico)
             {
-                return BadRequest(); // Retorna 400 (Bad Request) se os IDs não corresponderem
+                return BadRequest(); // Retorna 400 (Bad Request) se os parâmetros não corresponderem
             }
 
             // Chama o serviço para atualizar a consulta
@@ -89,15 +98,17 @@ namespace AiHackApi.Controllers
         }
 
         /// <summary>
-        /// Exclui uma consulta pelo ID.
+        /// Exclui uma consulta pela chave composta.
         /// </summary>
-        /// <param name="id">O ID da consulta a ser excluída.</param>
+        /// <param name="dataHoraConsulta">A data e hora da consulta a ser excluída.</param>
+        /// <param name="cpfPaciente">O CPF do paciente da consulta a ser excluída.</param>
+        /// <param name="idMedico">O ID do médico da consulta a ser excluída.</param>
         /// <returns>Resposta vazia se a exclusão for bem-sucedida.</returns>
-        [HttpDelete("{id}")] // Define que este método responde a requisições HTTP DELETE com um ID na URL
-        public async Task<IActionResult> DeleteConsulta(int id)
+        [HttpDelete("{dataHoraConsulta}/{cpfPaciente}/{idMedico}")] // Define que este método responde a HTTP DELETE com a chave composta na URL
+        public async Task<IActionResult> DeleteConsulta(DateTime dataHoraConsulta, string cpfPaciente, int idMedico)
         {
             // Usa o serviço para verificar se a consulta existe
-            var consulta = await _consultaService.GetConsultaByIdAsync(id);
+            var consulta = await _consultaService.GetConsultaByIdAsync(dataHoraConsulta, cpfPaciente, idMedico);
 
             // Se a consulta não for encontrada, retorna um erro 404 (Not Found)
             if (consulta == null)
@@ -106,11 +117,10 @@ namespace AiHackApi.Controllers
             }
 
             // Chama o serviço para excluir a consulta
-            await _consultaService.DeleteConsultaAsync(id);
+            await _consultaService.DeleteConsultaAsync(dataHoraConsulta, cpfPaciente, idMedico);
 
             // Retorna 204 (No Content) para indicar que a exclusão foi bem-sucedida
             return NoContent();
         }
     }
 }
-

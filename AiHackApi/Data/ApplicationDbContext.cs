@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;// Importação do Entity Framework Core para uso de DbContext e manipulação de dados
+﻿using Microsoft.EntityFrameworkCore; // Importação do Entity Framework Core para uso de DbContext e manipulação de dados
 using AiHackApi.Models; // Importa os modelos de entidades do projeto
 
 namespace AiHackApi.Data
@@ -32,6 +32,32 @@ namespace AiHackApi.Data
                 entity.HasKey(e => e.CPF); // Define CPF como chave primária
                 entity.Property(e => e.CPF).IsRequired(); // Certifica que CPF é obrigatório
                 entity.Property(e => e.NomePaciente).IsRequired(); // Certifica que o NomePaciente é obrigatório
+            });
+
+            // Configuração da chave primária do Medico
+            modelBuilder.Entity<Medico>(entity =>
+            {
+                entity.HasKey(e => e.CrmMedico); // Define CRM como chave primária
+                entity.Property(e => e.CrmMedico).IsRequired(); // Certifica que CRM é obrigatório
+                entity.Property(e => e.NmMedico).IsRequired(); // Certifica que o Nome do médico é obrigatório
+            });
+
+            // Configuração da chave composta da entidade Consulta
+            modelBuilder.Entity<Consulta>(entity =>
+            {
+                entity.HasKey(e => new { e.DataHoraConsulta, e.CpfPaciente, e.TbMedicosIdMedico }); // Define chave composta
+                entity.Property(e => e.DataHoraConsulta).IsRequired(); // Certifica que DataHoraConsulta é obrigatória
+                entity.Property(e => e.CpfPaciente).IsRequired(); // Certifica que o CPF do paciente é obrigatório
+                entity.Property(e => e.TbMedicosIdMedico).IsRequired(); // Certifica que o ID do médico é obrigatório
+
+                // Definição de relacionamentos
+                entity.HasOne(e => e.Paciente) // Relacionamento com Paciente
+                    .WithMany()
+                    .HasForeignKey(e => e.CpfPaciente);
+
+                entity.HasOne(e => e.Medico) // Relacionamento com Medico
+                    .WithMany()
+                    .HasForeignKey(e => e.TbMedicosIdMedico);
             });
 
             // Chamando o método base para garantir que outras configurações padrão sejam aplicadas.
