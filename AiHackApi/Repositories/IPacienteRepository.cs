@@ -18,7 +18,7 @@ public interface IPacienteRepository
     /// Obtém os detalhes de um paciente específico pelo CPF.
     /// </summary>
     /// <param name="cpf">O CPF do paciente.</param>
-    /// <returns>O paciente correspondente ao CPF informado.</returns>
+    /// <returns>O paciente correspondente ao CPF informado ou null se não encontrado.</returns>
     Task<Paciente> ObterPorCpfAsync(string cpf);
 
     /// <summary>

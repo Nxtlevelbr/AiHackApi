@@ -1,86 +1,118 @@
-﻿using AiHackApi.Data; // Importa o contexto do banco de dados
-using AiHackApi.Models; // Importa as classes de modelo
-using Microsoft.EntityFrameworkCore; // Importa funcionalidades do Entity Framework Core
-using System.Collections.Generic; // Importa as funcionalidades relacionadas a coleções genéricas
-using System.Threading.Tasks; // Importa o suporte para operações assíncronas
+﻿// Importa classes e namespaces necessários para o funcionamento da aplicação.
+using AiHackApi.DTOs;
+using AiHackApi.Models;
+using AiHackApi.Repositories;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace AiHackApi.Repositories
+namespace AiHackApi.Services
 {
-    // Implementação do repositório de Pacientes que implementa a interface IPacienteRepository
-    public class PacienteRepository : IPacienteRepository
+    public class PacienteService : IPacienteService
     {
-        private readonly ApplicationDbContext _context; // Instância do contexto do banco de dados
+        // Repositório utilizado para acessar e manipular dados de pacientes.
+        private readonly IPacienteRepository _pacienteRepository;
 
-        // Construtor que recebe o contexto e o atribui ao campo _context
-        public PacienteRepository(ApplicationDbContext context)
+        // Construtor que recebe uma instância de IPacienteRepository para acesso aos dados.
+        public PacienteService(IPacienteRepository pacienteRepository)
         {
-            _context = context;
+            _pacienteRepository = pacienteRepository;
         }
 
-        // Método para adicionar um novo paciente ao banco de dados de forma assíncrona
-        public async Task<Paciente> AdicionarAsync(Paciente paciente)
+        /// <summary>
+        /// Obtém um paciente específico pelo CPF e o retorna como um DTO.
+        /// </summary>
+        /// <param name="cpf">O CPF do paciente.</param>
+        /// <returns>A tarefa que representa a operação assíncrona. O resultado é um <see cref="PacienteDto"/> correspondente ao CPF fornecido.</returns>
+        /// <exception cref="KeyNotFoundException">Lançado se o paciente não for encontrado.</exception>
+        public async Task<PacienteDto> GetPacienteByCpfAsync(string cpf)
         {
+            var paciente = await _pacienteRepository.ObterPorCpfAsync(cpf);
             if (paciente == null)
             {
-                throw new ArgumentNullException(nameof(paciente)); // Verifica se o paciente é nulo
+                throw new KeyNotFoundException("Paciente não encontrado.");
             }
-
-            await _context.Pacientes.AddAsync(paciente); // Adiciona o paciente ao contexto
-            await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
-            return paciente; // Retorna o paciente adicionado
+            // Converte o modelo de dados Paciente para um PacienteDto
+            return new PacienteDto
+            {
+                CPF = paciente.CPF,
+                NomePaciente = paciente.NomePaciente
+            };
         }
 
-        // Método para buscar um paciente pelo CPF de forma assíncrona
-        public async Task<Paciente> ObterPorCpfAsync(string cpf)
+        /// <summary>
+        /// Obtém todos os pacientes e os retorna como uma coleção de DTOs.
+        /// </summary>
+        /// <returns>A tarefa que representa a operação assíncrona. O resultado é uma coleção de <see cref="PacienteDto"/> representando todos os pacientes.</returns>
+        public async Task<IEnumerable<PacienteDto>> GetAllPacientesAsync()
         {
-            var paciente = await _context.Pacientes.FirstOrDefaultAsync(p => p.CPF == cpf); // Busca o paciente pelo CPF
+            var pacientes = await _pacienteRepository.ObterTodosAsync();
+            // Converte a coleção de modelos de dados Paciente para uma coleção de PacienteDto
+            return pacientes.Select(p => new PacienteDto
+            {
+                CPF = p.CPF,
+                NomePaciente = p.NomePaciente
+            });
+        }
+
+        /// <summary>
+        /// Cria um novo paciente com base nas informações fornecidas no DTO.
+        /// </summary>
+        /// <param name="pacienteDto">O objeto <see cref="PacienteDto"/> que contém as informações do paciente a ser criado.</param>
+        /// <returns>A tarefa que representa a operação assíncrona.</returns>
+        /// <exception cref="InvalidOperationException">Lançado se já houver um paciente com o mesmo CPF.</exception>
+        public async Task CreatePacienteAsync(PacienteDto pacienteDto)
+        {
+            // Verifica se já existe um paciente com o mesmo CPF
+            var pacienteExistente = await _pacienteRepository.ObterPorCpfAsync(pacienteDto.CPF);
+            if (pacienteExistente != null)
+            {
+                throw new InvalidOperationException("O CPF já está registrado.");
+            }
+
+            // Prossegue com a criação do novo paciente
+            var paciente = new Paciente
+            {
+                CPF = pacienteDto.CPF,
+                NomePaciente = pacienteDto.NomePaciente
+            };
+
+            await _pacienteRepository.AdicionarAsync(paciente);
+        }
+
+        /// <summary>
+        /// Atualiza as informações de um paciente existente com base no DTO fornecido.
+        /// </summary>
+        /// <param name="pacienteDto">O objeto <see cref="PacienteDto"/> com as informações atualizadas do paciente.</param>
+        /// <returns>A tarefa que representa a operação assíncrona.</returns>
+        /// <exception cref="KeyNotFoundException">Lançado se o paciente não for encontrado.</exception>
+        public async Task UpdatePacienteAsync(PacienteDto pacienteDto)
+        {
+            var paciente = await _pacienteRepository.ObterPorCpfAsync(pacienteDto.CPF);
             if (paciente == null)
             {
-                throw new NotFoundException($"Paciente com CPF {cpf} não encontrado."); // Lança exceção se o paciente não for encontrado
+                throw new KeyNotFoundException("Paciente não encontrado.");
             }
-            return paciente; // Retorna o paciente encontrado
+            // Atualiza as informações do paciente com base no DTO
+            paciente.NomePaciente = pacienteDto.NomePaciente;
+
+            await _pacienteRepository.AtualizarAsync(paciente);
         }
 
-        // Método para obter todos os pacientes de forma assíncrona
-        public async Task<IEnumerable<Paciente>> ObterTodosAsync()
+        /// <summary>
+        /// Remove um paciente do repositório pelo seu CPF.
+        /// </summary>
+        /// <param name="cpf">O CPF do paciente a ser removido.</param>
+        /// <returns>A tarefa que representa a operação assíncrona.</returns>
+        /// <exception cref="KeyNotFoundException">Lançado se o paciente não for encontrado.</exception>
+        public async Task DeletePacienteAsync(string cpf)
         {
-            var pacientes = await _context.Pacientes.AsNoTracking().ToListAsync(); // Busca todos os pacientes sem rastreamento
-
-            // Retorna uma lista vazia, ao invés de lançar exceção, se nenhum paciente for encontrado
-            return pacientes ?? new List<Paciente>();
-        }
-
-        // Método para atualizar um paciente existente de forma assíncrona
-        public async Task<Paciente> AtualizarAsync(Paciente paciente)
-        {
+            var paciente = await _pacienteRepository.ObterPorCpfAsync(cpf);
             if (paciente == null)
             {
-                throw new ArgumentNullException(nameof(paciente)); // Verifica se o paciente é nulo
+                throw new KeyNotFoundException("Paciente não encontrado.");
             }
-
-            var existingPaciente = await ObterPorCpfAsync(paciente.CPF); // Verifica se o paciente existe pelo CPF
-            if (existingPaciente == null)
-            {
-                throw new NotFoundException($"Paciente com CPF {paciente.CPF} não encontrado.");
-            }
-
-            _context.Entry(paciente).State = EntityState.Modified; // Marca a entidade como modificada
-            await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
-            return paciente; // Retorna o paciente atualizado
-        }
-
-        // Método para excluir um paciente de forma assíncrona
-        public async Task<bool> DeletarAsync(string cpf)
-        {
-            var paciente = await ObterPorCpfAsync(cpf); // Busca o paciente pelo CPF
-            if (paciente == null)
-            {
-                return false; // Retorna false se o paciente não for encontrado
-            }
-
-            _context.Pacientes.Remove(paciente); // Remove o paciente do contexto
-            await _context.SaveChangesAsync(); // Salva as alterações no banco de dados
-            return true; // Retorna true indicando que a exclusão foi bem-sucedida
+            await _pacienteRepository.DeletarAsync(cpf);
         }
     }
 }

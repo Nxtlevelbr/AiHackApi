@@ -60,13 +60,23 @@ namespace AiHackApi.Services
         /// </summary>
         /// <param name="pacienteDto">O objeto <see cref="PacienteDto"/> que contém as informações do paciente a ser criado.</param>
         /// <returns>A tarefa que representa a operação assíncrona.</returns>
+        /// <exception cref="InvalidOperationException">Lançado se já houver um paciente com o mesmo CPF.</exception>
         public async Task CreatePacienteAsync(PacienteDto pacienteDto)
         {
+            // Verifica se já existe um paciente com o mesmo CPF
+            var pacienteExistente = await _pacienteRepository.ObterPorCpfAsync(pacienteDto.CPF);
+            if (pacienteExistente != null)
+            {
+                throw new InvalidOperationException("O CPF já está registrado.");
+            }
+
+            // Prossegue com a criação do novo paciente
             var paciente = new Paciente
             {
                 CPF = pacienteDto.CPF,
                 NomePaciente = pacienteDto.NomePaciente
             };
+
             await _pacienteRepository.AdicionarAsync(paciente);
         }
 
