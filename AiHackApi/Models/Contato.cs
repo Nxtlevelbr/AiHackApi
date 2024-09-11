@@ -7,24 +7,27 @@ namespace AiHackApi.Models
     [Table("tb_contatos")]
     public class Contato
     {
-        // Define a propriedade IdContato como chave primária da tabela
+        // Define a propriedade Email como chave primária da tabela
         [Key]
-        [Column("id_contato")] // Mapeia a coluna "id_contato" no banco de dados
-        public int IdContato { get; set; }
+        [Column("email")] // Mapeia a coluna "email" no banco de dados
+        public string Email { get; set; }
+
+        // Define a propriedade NomeContato como campo obrigatório
+        [Required] // O campo é obrigatório
+        [Column("nome_contato")] // Mapeia a coluna "nome_contato" no banco de dados
+        [StringLength(100, ErrorMessage = "O nome do contato pode ter no máximo 100 caracteres.")]
+        public string NomeContato { get; set; }
 
         // Define a propriedade Telefone como campo obrigatório
         [Required] // O campo é obrigatório
         [Column("telefone")] // Mapeia a coluna "telefone" no banco de dados
+        [StringLength(15, ErrorMessage = "O telefone pode ter no máximo 15 caracteres.")]
         public string Telefone { get; set; }
 
-        // Define a propriedade Email como campo obrigatório
-        [Required] // O campo é obrigatório
-        [Column("email")] // Mapeia a coluna "email" no banco de dados
-        public string Email { get; set; }
-
         // Construtor que inicializa os campos obrigatórios com valores válidos
-        public Contato(string telefone, string email)
+        public Contato(string nomeContato, string telefone, string email)
         {
+            NomeContato = nomeContato ?? throw new ArgumentNullException(nameof(nomeContato)); // Verifica se NomeContato é nulo
             Telefone = telefone ?? throw new ArgumentNullException(nameof(telefone)); // Verifica se telefone é nulo
             Email = email ?? throw new ArgumentNullException(nameof(email)); // Verifica se email é nulo
         }
@@ -33,10 +36,9 @@ namespace AiHackApi.Models
         public Contato()
         {
             // Inicializa as propriedades com valores padrões para evitar nulos
+            NomeContato = string.Empty;
             Telefone = string.Empty;
             Email = string.Empty;
         }
     }
 }
-
-

@@ -17,14 +17,14 @@ public class ContatoRepository : IContatoRepository
     }
 
     /// <summary>
-    /// Obtém um contato específico pelo ID.
+    /// Obtém um contato específico pelo email.
     /// </summary>
-    /// <param name="id">ID do contato a ser buscado.</param>
+    /// <param name="email">Email do contato a ser buscado.</param>
     /// <returns>Retorna o contato encontrado ou lança uma exceção se não for encontrado.</returns>
-    public async Task<Contato> ObterPorIdAsync(int id)
+    public async Task<Contato> ObterPorEmailAsync(string email)
     {
-        // Busca o contato pelo ID
-        var contato = await _context.Contatos.FindAsync(id);
+        // Busca o contato pelo email
+        var contato = await _context.Contatos.FirstOrDefaultAsync(c => c.Email == email);
         if (contato == null)
         {
             // Lança uma exceção se o contato não for encontrado
@@ -72,14 +72,14 @@ public class ContatoRepository : IContatoRepository
     }
 
     /// <summary>
-    /// Deleta um contato pelo ID.
+    /// Deleta um contato pelo email.
     /// </summary>
-    /// <param name="id">ID do contato a ser deletado.</param>
+    /// <param name="email">Email do contato a ser deletado.</param>
     /// <returns>True se a exclusão for bem-sucedida, caso contrário false.</returns>
-    public async Task<bool> DeletarAsync(int id)
+    public async Task<bool> DeletarAsync(string email)
     {
-        // Busca o contato pelo ID
-        var contato = await ObterPorIdAsync(id);
+        // Busca o contato pelo email
+        var contato = await ObterPorEmailAsync(email);
         if (contato == null) return false; // Retorna false se o contato não for encontrado
 
         // Remove o contato do contexto e salva as alterações

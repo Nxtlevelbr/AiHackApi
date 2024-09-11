@@ -17,11 +17,11 @@ namespace AiHackApi.Repositories
         Task<Contato> AdicionarAsync(Contato contato);
 
         /// <summary>
-        /// Busca um contato pelo ID.
+        /// Busca um contato pelo Email.
         /// </summary>
-        /// <param name="id">O ID do contato a ser buscado.</param>
-        /// <returns>O contato correspondente ao ID informado.</returns>
-        Task<Contato> ObterPorIdAsync(int id);
+        /// <param name="email">O Email do contato a ser buscado.</param>
+        /// <returns>O contato correspondente ao Email informado.</returns>
+        Task<Contato> ObterPorEmailAsync(string email);
 
         /// <summary>
         /// Retorna todos os contatos cadastrados.
@@ -37,10 +37,10 @@ namespace AiHackApi.Repositories
         Task<Contato> AtualizarAsync(Contato contato);
 
         /// <summary>
-        /// Deleta um contato pelo ID.
+        /// Deleta um contato pelo Email.
         /// </summary>
-        /// <param name="id">O ID do contato a ser deletado.</param>
+        /// <param name="email">O Email do contato a ser deletado.</param>
         /// <returns>True se o contato foi deletado com sucesso, caso contrário False.</returns>
-        Task<bool> DeletarAsync(int id);
+        Task<bool> DeletarAsync(string email);
     }
 }

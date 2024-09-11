@@ -60,6 +60,15 @@ namespace AiHackApi.Data
                     .HasForeignKey(e => e.TbMedicosIdMedico);
             });
 
+            // Configuração da chave primária de Contato (Email como chave)
+            modelBuilder.Entity<Contato>(entity =>
+            {
+                entity.HasKey(e => e.Email); // Define Email como chave primária
+                entity.Property(e => e.Email).IsRequired(); // Certifica que Email é obrigatório
+                entity.Property(e => e.NomeContato).IsRequired(); // Certifica que o NomeContato é obrigatório
+                entity.Property(e => e.Telefone).IsRequired(); // Certifica que Telefone é obrigatório
+            });
+
             // Chamando o método base para garantir que outras configurações padrão sejam aplicadas.
             base.OnModelCreating(modelBuilder);
         }

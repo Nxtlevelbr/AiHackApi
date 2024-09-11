@@ -21,11 +21,11 @@ namespace AiHackApi.Services
         Task<Contato> CriarContatoAsync(Contato contato);
 
         /// <summary>
-        /// Obtém um contato específico pelo seu identificador.
+        /// Obtém um contato específico pelo seu email.
         /// </summary>
-        /// <param name="id">O identificador do contato.</param>
-        /// <returns>A tarefa que representa a operação assíncrona. O resultado é o contato correspondente ao identificador.</returns>
-        Task<Contato> ObterContatoPorIdAsync(int id);
+        /// <param name="email">O email do contato.</param>
+        /// <returns>A tarefa que representa a operação assíncrona. O resultado é o contato correspondente ao email.</returns>
+        Task<Contato> ObterContatoPorEmailAsync(string email);
 
         /// <summary>
         /// Obtém todos os contatos do repositório.
@@ -41,10 +41,10 @@ namespace AiHackApi.Services
         Task<Contato> AtualizarContatoAsync(Contato contato);
 
         /// <summary>
-        /// Remove um contato do repositório pelo seu identificador.
+        /// Remove um contato do repositório pelo seu email.
         /// </summary>
-        /// <param name="id">O identificador do contato a ser removido.</param>
+        /// <param name="email">O email do contato a ser removido.</param>
         /// <returns>A tarefa que representa a operação assíncrona. O resultado é um valor booleano indicando se a operação foi bem-sucedida.</returns>
-        Task<bool> DeletarContatoAsync(int id);
+        Task<bool> DeletarContatoAsync(string email);
     }
 }

@@ -35,18 +35,18 @@ namespace AiHackApi.Controllers
         }
 
         /// <summary>
-        /// Obtém um contato específico pelo ID.
+        /// Obtém um contato específico pelo email.
         /// </summary>
-        /// <param name="id">O ID do contato.</param>
-        /// <returns>O contato correspondente ao ID informado.</returns>
-        [SwaggerOperation(Summary = "Obtém um contato específico", Description = "Este endpoint retorna os detalhes de um contato com base no ID fornecido.")]
+        /// <param name="email">O email do contato.</param>
+        /// <returns>O contato correspondente ao email informado.</returns>
+        [SwaggerOperation(Summary = "Obtém um contato específico", Description = "Este endpoint retorna os detalhes de um contato com base no email fornecido.")]
         [SwaggerResponse(200, "Contato encontrado com sucesso", typeof(Contato))] // Retorna 200 se o contato for encontrado
         [SwaggerResponse(404, "Contato não encontrado")] // Retorna 404 se o contato não for encontrado
-        [HttpGet("{id}")] // Define que este método responde a requisições GET com um ID na URL (ex: api/Contato/1)
-        public async Task<ActionResult<Contato>> GetContato(int id)
+        [HttpGet("{email}")] // Define que este método responde a requisições GET com um email na URL (ex: api/Contato/johndoe@email.com)
+        public async Task<ActionResult<Contato>> GetContato(string email)
         {
-            // Usa o serviço para obter um contato específico pelo ID
-            var contato = await _contatoService.ObterContatoPorIdAsync(id);
+            // Usa o serviço para obter um contato específico pelo email
+            var contato = await _contatoService.ObterContatoPorEmailAsync(email);
 
             // Se o contato não for encontrado, retorna um erro 404 (Not Found)
             if (contato == null)
@@ -78,25 +78,25 @@ namespace AiHackApi.Controllers
             var novoContato = await _contatoService.CriarContatoAsync(contato);
 
             // Retorna 201 (Created) e a URL para acessar o contato recém-criado
-            return CreatedAtAction(nameof(GetContato), new { id = novoContato.IdContato }, novoContato);
+            return CreatedAtAction(nameof(GetContato), new { email = novoContato.Email }, novoContato);
         }
 
         /// <summary>
         /// Atualiza os dados de um contato existente.
         /// </summary>
-        /// <param name="id">O ID do contato a ser atualizado.</param>
+        /// <param name="email">O email do contato a ser atualizado.</param>
         /// <param name="contatoAtualizado">Objeto com os dados atualizados do contato.</param>
         /// <returns>Resposta vazia se a atualização for bem-sucedida.</returns>
-        [SwaggerOperation(Summary = "Atualiza um contato", Description = "Este endpoint atualiza os detalhes de um contato com base no ID fornecido.")]
+        [SwaggerOperation(Summary = "Atualiza um contato", Description = "Este endpoint atualiza os detalhes de um contato com base no email fornecido.")]
         [SwaggerResponse(204, "Contato atualizado com sucesso")] // Retorna 204 (No Content) se a atualização for bem-sucedida
         [SwaggerResponse(404, "Contato não encontrado")] // Retorna 404 se o contato não for encontrado
-        [HttpPut("{id}")] // Define que este método responde a requisições HTTP PUT com um ID na URL
-        public async Task<IActionResult> AtualizarContato(int id, [FromBody] Contato contatoAtualizado)
+        [HttpPut("{email}")] // Define que este método responde a requisições HTTP PUT com um email na URL
+        public async Task<IActionResult> AtualizarContato(string email, [FromBody] Contato contatoAtualizado)
         {
-            // Verifica se o ID informado na URL corresponde ao ID do contato fornecido no corpo da requisição
-            if (id != contatoAtualizado.IdContato)
+            // Verifica se o email informado na URL corresponde ao email do contato fornecido no corpo da requisição
+            if (email != contatoAtualizado.Email)
             {
-                return BadRequest(new { message = "O ID do contato não corresponde." }); // Retorna 400 (Bad Request) se os IDs não corresponderem
+                return BadRequest(new { message = "O email do contato não corresponde." }); // Retorna 400 (Bad Request) se os emails não corresponderem
             }
 
             // Valida o modelo atualizado antes de prosseguir
@@ -119,20 +119,20 @@ namespace AiHackApi.Controllers
         }
 
         /// <summary>
-        /// Exclui um contato pelo ID.
+        /// Exclui um contato pelo email.
         /// </summary>
-        /// <param name="id">O ID do contato a ser excluído.</param>
+        /// <param name="email">O email do contato a ser excluído.</param>
         /// <returns>Resposta vazia se a exclusão for bem-sucedida.</returns>
-        [SwaggerOperation(Summary = "Exclui um contato", Description = "Este endpoint exclui um contato com base no ID fornecido.")]
+        [SwaggerOperation(Summary = "Exclui um contato", Description = "Este endpoint exclui um contato com base no email fornecido.")]
         [SwaggerResponse(204, "Contato excluído com sucesso")] // Retorna 204 (No Content) se a exclusão for bem-sucedida
         [SwaggerResponse(404, "Contato não encontrado")] // Retorna 404 se o contato não for encontrado
-        [HttpDelete("{id}")] // Define que este método responde a requisições HTTP DELETE com um ID na URL
-        public async Task<IActionResult> DeletarContato(int id)
+        [HttpDelete("{email}")] // Define que este método responde a requisições HTTP DELETE com um email na URL
+        public async Task<IActionResult> DeletarContato(string email)
         {
             try
             {
                 // Chama o serviço para excluir o contato
-                await _contatoService.DeletarContatoAsync(id);
+                await _contatoService.DeletarContatoAsync(email);
                 return NoContent(); // Retorna 204 (No Content) se a exclusão for bem-sucedida
             }
             catch (KeyNotFoundException)
@@ -143,4 +143,3 @@ namespace AiHackApi.Controllers
         }
     }
 }
-

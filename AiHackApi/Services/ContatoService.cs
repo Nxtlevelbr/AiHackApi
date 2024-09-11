@@ -40,14 +40,14 @@ namespace AiHackApi.Services
         }
 
         /// <summary>
-        /// Obtém um contato específico pelo seu identificador.
+        /// Obtém um contato específico pelo seu email.
         /// </summary>
-        /// <param name="id">O identificador do contato.</param>
-        /// <returns>O contato correspondente ao identificador.</returns>
-        public async Task<Contato> ObterContatoPorIdAsync(int id)
+        /// <param name="email">O email do contato.</param>
+        /// <returns>O contato correspondente ao email.</returns>
+        public async Task<Contato> ObterContatoPorEmailAsync(string email)
         {
-            // Recupera o contato do repositório usando o identificador fornecido.
-            return await _contatoRepository.ObterPorIdAsync(id);
+            // Recupera o contato do repositório usando o email fornecido.
+            return await _contatoRepository.ObterPorEmailAsync(email);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace AiHackApi.Services
         {
             // Recupera todos os contatos do repositório e converte para uma lista.
             var contatos = await _contatoRepository.ObterTodosAsync();
-            return contatos.ToList(); // Conversão explícita de IEnumerable para List, se necessário
+            return contatos;
         }
 
         /// <summary>
@@ -73,14 +73,14 @@ namespace AiHackApi.Services
         }
 
         /// <summary>
-        /// Remove um contato do repositório pelo seu identificador.
+        /// Remove um contato do repositório pelo seu email.
         /// </summary>
-        /// <param name="id">O identificador do contato a ser removido.</param>
+        /// <param name="email">O email do contato a ser removido.</param>
         /// <returns>Um valor booleano indicando se a operação foi bem-sucedida.</returns>
-        public async Task<bool> DeletarContatoAsync(int id)
+        public async Task<bool> DeletarContatoAsync(string email)
         {
             // Remove o contato do repositório e retorna true se a operação for bem-sucedida.
-            return await _contatoRepository.DeletarAsync(id);
+            return await _contatoRepository.DeletarAsync(email);
         }
     }
 }
