@@ -3,6 +3,7 @@ using AiHackApi.DTOs; // DTOs (Data Transfer Objects) usados para transferência
 using AiHackApi.Models; // Modelos de entidades da aplicação
 using AiHackApi.Services; // Serviços que contêm a lógica de negócio
 using Microsoft.AspNetCore.Mvc; // Bibliotecas essenciais para criar APIs em ASP.NET Core
+using Swashbuckle.AspNetCore.Annotations; // Usado para gerar documentação Swagger para os endpoints
 using System.Collections.Generic; // Para trabalhar com listas genéricas
 using System.Threading.Tasks; // Para operações assíncronas
 
@@ -24,6 +25,9 @@ namespace AiHackApi.Controllers
         /// Lista todos os pacientes cadastrados.
         /// </summary>
         /// <returns>Uma lista de objetos PacienteDto.</returns>
+        [SwaggerOperation(Summary = "Lista todos os pacientes", Description = "Este endpoint retorna todos os pacientes cadastrados no sistema.")]
+        [SwaggerResponse(200, "Pacientes listados com sucesso", typeof(IEnumerable<PacienteDto>))]
+        [SwaggerResponse(204, "Nenhum paciente encontrado")]
         [HttpGet] // Método responde a requisições HTTP GET
         public async Task<ActionResult<IEnumerable<PacienteDto>>> GetPacientes()
         {
@@ -44,8 +48,11 @@ namespace AiHackApi.Controllers
         /// </summary>
         /// <param name="cpf">O CPF do paciente.</param>
         /// <returns>O objeto PacienteDto correspondente ao CPF fornecido.</returns>
+        [SwaggerOperation(Summary = "Obtém um paciente específico", Description = "Este endpoint retorna os detalhes de um paciente com base no CPF fornecido.")]
+        [SwaggerResponse(200, "Paciente encontrado com sucesso", typeof(PacienteDto))]
+        [SwaggerResponse(404, "Paciente não encontrado")]
         [HttpGet("{cpf}")] // Método responde a GET com o CPF na URL (ex: api/Paciente/12345678900)
-        public async Task<ActionResult<PacienteDto>> GetPacienteByCpf(string cpf)
+        public async Task<ActionResult<PacienteDto>> GetPacienteByCpf([SwaggerParameter(Description = "CPF do paciente")] string cpf)
         {
             // Chama o serviço para obter o paciente pelo CPF
             var paciente = await _pacienteService.GetPacienteByCpfAsync(cpf);
@@ -64,6 +71,9 @@ namespace AiHackApi.Controllers
         /// </summary>
         /// <param name="pacienteDto">Objeto com os dados do paciente a ser criado.</param>
         /// <returns>O paciente recém-criado.</returns>
+        [SwaggerOperation(Summary = "Cadastra um novo paciente", Description = "Este endpoint cria um novo paciente com base nos dados fornecidos.")]
+        [SwaggerResponse(201, "Paciente criado com sucesso", typeof(PacienteDto))]
+        [SwaggerResponse(400, "Dados inválidos para criar o paciente")]
         [HttpPost] // Método responde a requisições HTTP POST para criação de recursos
         public async Task<ActionResult> CreatePaciente([FromBody] PacienteDto pacienteDto)
         {
@@ -80,8 +90,14 @@ namespace AiHackApi.Controllers
         /// <param name="cpf">O CPF do paciente a ser atualizado.</param>
         /// <param name="pacienteDto">Objeto com os dados atualizados do paciente.</param>
         /// <returns>Resposta vazia se a atualização for bem-sucedida.</returns>
+        [SwaggerOperation(Summary = "Atualiza um paciente existente", Description = "Este endpoint atualiza os dados de um paciente com base no CPF fornecido.")]
+        [SwaggerResponse(204, "Paciente atualizado com sucesso")]
+        [SwaggerResponse(400, "Os parâmetros fornecidos não correspondem ao CPF do paciente")]
+        [SwaggerResponse(404, "Paciente não encontrado")]
         [HttpPut("{cpf}")] // Método responde a HTTP PUT com um CPF na URL
-        public async Task<IActionResult> UpdatePaciente(string cpf, [FromBody] PacienteDto pacienteDto)
+        public async Task<IActionResult> UpdatePaciente(
+            [SwaggerParameter(Description = "CPF do paciente a ser atualizado")] string cpf,
+            [FromBody] PacienteDto pacienteDto)
         {
             // Verifica se o CPF da URL corresponde ao CPF do objeto paciente
             if (cpf != pacienteDto.CPF)
@@ -100,8 +116,12 @@ namespace AiHackApi.Controllers
         /// </summary>
         /// <param name="cpf">O CPF do paciente a ser excluído.</param>
         /// <returns>Resposta vazia se a exclusão for bem-sucedida.</returns>
+        [SwaggerOperation(Summary = "Exclui um paciente", Description = "Este endpoint exclui um paciente com base no CPF fornecido.")]
+        [SwaggerResponse(204, "Paciente excluído com sucesso")]
+        [SwaggerResponse(404, "Paciente não encontrado")]
         [HttpDelete("{cpf}")] // Método responde a HTTP DELETE com um CPF na URL
-        public async Task<IActionResult> DeletePaciente(string cpf)
+        public async Task<IActionResult> DeletePaciente(
+            [SwaggerParameter(Description = "CPF do paciente a ser excluído")] string cpf)
         {
             // Chama o serviço para verificar se o paciente existe
             var paciente = await _pacienteService.GetPacienteByCpfAsync(cpf);

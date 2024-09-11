@@ -43,59 +43,51 @@ namespace AiHackApi.Migrations
 
             modelBuilder.Entity("AiHackApi.Models.Consulta", b =>
                 {
-                    b.Property<int>("IdConsulta")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)")
-                        .HasColumnName("id_consulta");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdConsulta"));
-
                     b.Property<DateTime>("DataHoraConsulta")
                         .HasColumnType("TIMESTAMP(7)")
                         .HasColumnName("data_hora_consulta");
+
+                    b.Property<string>("CpfPaciente")
+                        .HasColumnType("NVARCHAR2(450)")
+                        .HasColumnName("cpf_paciente");
+
+                    b.Property<int>("TbMedicosIdMedico")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("tb_medicos_id_medico");
 
                     b.Property<string>("StatusConsulta")
                         .IsRequired()
                         .HasColumnType("NVARCHAR2(2000)")
                         .HasColumnName("status_consulta");
 
-                    b.Property<int>("TbMedicosIdMedico")
-                        .HasColumnType("NUMBER(10)")
-                        .HasColumnName("tb_medicos_id_medico");
+                    b.HasKey("DataHoraConsulta", "CpfPaciente", "TbMedicosIdMedico");
 
-                    b.Property<int>("TbPacientesIdPaciente")
-                        .HasColumnType("NUMBER(10)")
-                        .HasColumnName("tb_pacientes_id_paciente");
-
-                    b.HasKey("IdConsulta");
+                    b.HasIndex("CpfPaciente");
 
                     b.HasIndex("TbMedicosIdMedico");
-
-                    b.HasIndex("TbPacientesIdPaciente");
 
                     b.ToTable("tb_consultas");
                 });
 
             modelBuilder.Entity("AiHackApi.Models.Contato", b =>
                 {
-                    b.Property<int>("IdContato")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)")
-                        .HasColumnName("id_contato");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdContato"));
-
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)")
+                        .HasColumnType("NVARCHAR2(450)")
                         .HasColumnName("email");
+
+                    b.Property<string>("NomeContato")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("nome_contato");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)")
+                        .HasMaxLength(15)
+                        .HasColumnType("NVARCHAR2(15)")
                         .HasColumnName("telefone");
 
-                    b.HasKey("IdContato");
+                    b.HasKey("Email");
 
                     b.ToTable("tb_contatos");
                 });
@@ -154,35 +146,23 @@ namespace AiHackApi.Migrations
 
             modelBuilder.Entity("AiHackApi.Models.Medico", b =>
                 {
-                    b.Property<int>("IdMedico")
+                    b.Property<int>("CrmMedico")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("NUMBER(10)")
-                        .HasColumnName("id_medico");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdMedico"));
-
-                    b.Property<int>("Ativo")
-                        .HasColumnType("NUMBER(10)")
-                        .HasColumnName("ativo");
-
-                    b.Property<int>("CrmMedico")
-                        .HasColumnType("NUMBER(10)")
                         .HasColumnName("crm_medico");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CrmMedico"));
+
+                    b.Property<string>("EmailContato")
+                        .IsRequired()
+                        .HasColumnType("NVARCHAR2(450)")
+                        .HasColumnName("email_contato");
 
                     b.Property<string>("NmMedico")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("NVARCHAR2(100)")
                         .HasColumnName("nm_medico");
-
-                    b.Property<decimal>("SalarioMedico")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("NUMBER(18, 2)")
-                        .HasColumnName("salario_medico");
-
-                    b.Property<int>("TbContatosIdContato")
-                        .HasColumnType("NUMBER(10)")
-                        .HasColumnName("tb_contatos_id_contato");
 
                     b.Property<int>("TbEnderecosIdEndereco")
                         .HasColumnType("NUMBER(10)")
@@ -192,9 +172,9 @@ namespace AiHackApi.Migrations
                         .HasColumnType("NUMBER(10)")
                         .HasColumnName("tb_especialidades_id_especialidade");
 
-                    b.HasKey("IdMedico");
+                    b.HasKey("CrmMedico");
 
-                    b.HasIndex("TbContatosIdContato");
+                    b.HasIndex("EmailContato");
 
                     b.HasIndex("TbEnderecosIdEndereco");
 
@@ -205,16 +185,8 @@ namespace AiHackApi.Migrations
 
             modelBuilder.Entity("AiHackApi.Models.Paciente", b =>
                 {
-                    b.Property<int>("IdPaciente")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("NUMBER(10)")
-                        .HasColumnName("id_paciente");
-
-                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPaciente"));
-
                     b.Property<string>("CPF")
-                        .IsRequired()
-                        .HasColumnType("NVARCHAR2(2000)")
+                        .HasColumnType("NVARCHAR2(450)")
                         .HasColumnName("cpf");
 
                     b.Property<string>("NomePaciente")
@@ -222,22 +194,22 @@ namespace AiHackApi.Migrations
                         .HasColumnType("NVARCHAR2(2000)")
                         .HasColumnName("nome_paciente");
 
-                    b.HasKey("IdPaciente");
+                    b.HasKey("CPF");
 
                     b.ToTable("tb_pacientes");
                 });
 
             modelBuilder.Entity("AiHackApi.Models.Consulta", b =>
                 {
-                    b.HasOne("AiHackApi.Models.Medico", "Medico")
+                    b.HasOne("AiHackApi.Models.Paciente", "Paciente")
                         .WithMany()
-                        .HasForeignKey("TbMedicosIdMedico")
+                        .HasForeignKey("CpfPaciente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AiHackApi.Models.Paciente", "Paciente")
+                    b.HasOne("AiHackApi.Models.Medico", "Medico")
                         .WithMany()
-                        .HasForeignKey("TbPacientesIdPaciente")
+                        .HasForeignKey("TbMedicosIdMedico")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -250,7 +222,7 @@ namespace AiHackApi.Migrations
                 {
                     b.HasOne("AiHackApi.Models.Contato", "Contato")
                         .WithMany()
-                        .HasForeignKey("TbContatosIdContato")
+                        .HasForeignKey("EmailContato")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

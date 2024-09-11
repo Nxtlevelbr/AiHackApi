@@ -16,7 +16,7 @@ namespace AiHackApi.Models
         // Define o status da consulta, campo obrigatório com uma mensagem personalizada
         [Required(ErrorMessage = "O status da consulta é obrigatório.")] // Validação personalizada
         [Column("status_consulta")] // Mapeia a coluna "status_consulta"
-        public required string StatusConsulta { get; set; }
+        public string StatusConsulta { get; set; }
 
         // Define o campo que armazena o ID do médico, chave estrangeira
         [Required] // O campo é obrigatório
@@ -30,18 +30,10 @@ namespace AiHackApi.Models
 
         // Relacionamento de chave estrangeira com a entidade Medico
         [ForeignKey("TbMedicosIdMedico")] // Indica a chave estrangeira para Medico
-        public required Medico Medico { get; set; }
+        public Medico Medico { get; set; }
 
         // Relacionamento de chave estrangeira com a entidade Paciente
         [ForeignKey("CpfPaciente")] // Indica a chave estrangeira para Paciente
-        public required Paciente Paciente { get; set; }
-
-        // Definir chave composta para garantir a unicidade
-        public static void Configure(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Consulta>()
-                .HasKey(c => new { c.DataHoraConsulta, c.CpfPaciente, c.TbMedicosIdMedico });
-        }
+        public Paciente Paciente { get; set; }
     }
 }
-

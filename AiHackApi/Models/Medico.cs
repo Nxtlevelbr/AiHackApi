@@ -23,18 +23,18 @@ namespace AiHackApi.Models
         [Column("tb_especialidades_id_especialidade")] // Mapeia a coluna de chave estrangeira
         public int TbEspecialidadesIdEspecialidade { get; set; }
 
-        // Define que o contato do médico é obrigatório
+        // Define que o contato do médico é obrigatório, agora usando o campo Email
         [Required]
-        [Column("tb_contatos_id_contato")] // Mapeia a coluna de chave estrangeira
-        public int TbContatosIdContato { get; set; }
+        [Column("email_contato")] // Mapeia a coluna "email_contato"
+        public string EmailContato { get; set; }
 
         // Define que o endereço do médico é obrigatório
         [Required]
         [Column("tb_enderecos_id_endereco")] // Mapeia a coluna de chave estrangeira
         public int TbEnderecosIdEndereco { get; set; }
 
-        // Define a relação de chave estrangeira com a entidade Contato
-        [ForeignKey("TbContatosIdContato")]
+        // Define a relação de chave estrangeira com a entidade Contato, usando o Email
+        [ForeignKey("EmailContato")]
         public required Contato Contato { get; set; }
 
         // Define a relação de chave estrangeira com a entidade Endereco
