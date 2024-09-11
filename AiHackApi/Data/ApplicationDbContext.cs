@@ -28,12 +28,11 @@ namespace AiHackApi.Data
         // Método OnModelCreating é usado para customizar o comportamento do Entity Framework ao criar o modelo de dados.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuração adicional para a entidade Medico.
-            // Definindo que o campo SalarioMedico terá uma precisão de 18 dígitos, com 2 casas decimais.
+            // Remover a configuração para SalarioMedico, pois não faz mais parte da entidade Medico
             modelBuilder.Entity<Medico>(entity =>
             {
-                entity.Property(e => e.SalarioMedico)
-                    .HasPrecision(18, 2); // Define a precisão e a escala do campo no banco de dados.
+                // Se necessário, adicione qualquer configuração adicional para CrmMedico aqui.
+                // entity.HasKey(e => e.CrmMedico); // Isso é automático, mas pode ser configurado explicitamente se necessário.
             });
 
             // Chamando o método base para garantir que outras configurações padrão sejam aplicadas.

@@ -1,6 +1,6 @@
 ﻿// Importa classes e namespaces necessários para o funcionamento da aplicação.
-using AiHackApi.Models;// AiHackApi.Models: Contém as definições dos modelos de dados, como Medico.
-using AiHackApi.Data;// AiHackApi.Data: Contém as definições do repositório para acesso aos dados, como IMedicoRepository.
+using AiHackApi.Models; // Contém as definições dos modelos de dados, como Medico.
+using AiHackApi.Data; // Contém as definições do repositório para acesso aos dados, como IMedicoRepository.
 
 public class MedicoService : IMedicoService
 {
@@ -25,13 +25,13 @@ public class MedicoService : IMedicoService
     }
 
     /// <summary>
-    /// Obtém um médico específico pelo seu identificador.
+    /// Obtém um médico específico pelo seu CRM.
     /// </summary>
-    /// <param name="id">O identificador do médico.</param>
-    /// <returns>A tarefa que representa a operação assíncrona. O resultado é o objeto <see cref="Medico"/> correspondente ao identificador fornecido.</returns>
-    public async Task<Medico> GetMedicoByIdAsync(int id)
+    /// <param name="crmMedico">O CRM do médico.</param>
+    /// <returns>A tarefa que representa a operação assíncrona. O resultado é o objeto <see cref="Medico"/> correspondente ao CRM fornecido.</returns>
+    public async Task<Medico> GetMedicoByCrmAsync(int crmMedico)
     {
-        return await _medicoRepository.GetMedicoByIdAsync(id);
+        return await _medicoRepository.GetMedicoByCrmAsync(crmMedico);
     }
 
     /// <summary>
@@ -54,12 +54,12 @@ public class MedicoService : IMedicoService
     }
 
     /// <summary>
-    /// Remove um médico do repositório pelo seu identificador.
+    /// Remove um médico do repositório pelo seu CRM.
     /// </summary>
-    /// <param name="id">O identificador do médico a ser removido.</param>
+    /// <param name="crmMedico">O CRM do médico a ser removido.</param>
     /// <returns>A tarefa que representa a operação assíncrona. O resultado é um valor booleano indicando se a remoção foi bem-sucedida.</returns>
-    public async Task<bool> DeleteMedicoAsync(int id)
+    public async Task<bool> DeleteMedicoAsync(int crmMedico)
     {
-        return await _medicoRepository.DeleteMedicoAsync(id);
+        return await _medicoRepository.DeleteMedicoAsync(crmMedico);
     }
 }

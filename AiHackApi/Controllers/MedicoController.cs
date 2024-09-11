@@ -1,5 +1,4 @@
-﻿
-// Importações necessárias para a execução do controlador
+﻿// Importações necessárias para a execução do controlador
 using Microsoft.AspNetCore.Mvc; // Ferramentas do ASP.NET Core MVC para criação de APIs
 using Swashbuckle.AspNetCore.Annotations; // Usado para documentar endpoints no Swagger
 using System.Collections.Generic; // Para uso de coleções genéricas, como List e IEnumerable
@@ -36,18 +35,18 @@ namespace AiHackApi.Controllers
         }
 
         /// <summary>
-        /// Obtém os detalhes de um médico específico pelo ID.
+        /// Obtém os detalhes de um médico específico pelo CRM.
         /// </summary>
-        /// <param name="id">O ID do médico.</param>
-        /// <returns>O médico correspondente ao ID fornecido.</returns>
-        [SwaggerOperation(Summary = "Obtém um médico específico", Description = "Este endpoint retorna os detalhes de um médico com base no ID fornecido.")]
+        /// <param name="crmMedico">O CRM do médico.</param>
+        /// <returns>O médico correspondente ao CRM fornecido.</returns>
+        [SwaggerOperation(Summary = "Obtém um médico específico", Description = "Este endpoint retorna os detalhes de um médico com base no CRM fornecido.")]
         [SwaggerResponse(200, "Médico encontrado com sucesso", typeof(Medico))] // Resposta para sucesso
         [SwaggerResponse(404, "Médico não encontrado")] // Resposta para erro 404
-        [HttpGet("{id}")] // Método responde a HTTP GET com ID na URL (ex: api/Medico/1)
-        public async Task<ActionResult<Medico>> GetMedico(int id)
+        [HttpGet("{crmMedico}")] // Método responde a HTTP GET com CRM na URL (ex: api/Medico/123456)
+        public async Task<ActionResult<Medico>> GetMedico(int crmMedico)
         {
-            // Obtém o médico pelo ID usando o serviço
-            var medico = await _medicoService.GetMedicoByIdAsync(id);
+            // Obtém o médico pelo CRM usando o serviço
+            var medico = await _medicoService.GetMedicoByCrmAsync(crmMedico);
 
             // Se o médico não for encontrado, retorna 404 Not Found
             if (medico == null)
@@ -73,25 +72,25 @@ namespace AiHackApi.Controllers
             var medicoCriado = await _medicoService.CreateMedicoAsync(medico);
 
             // Retorna 201 Created com a URL do novo médico
-            return CreatedAtAction(nameof(GetMedico), new { id = medicoCriado.IdMedico }, medicoCriado);
+            return CreatedAtAction(nameof(GetMedico), new { crmMedico = medicoCriado.CrmMedico }, medicoCriado);
         }
 
         /// <summary>
         /// Atualiza os dados de um médico existente.
         /// </summary>
-        /// <param name="id">O ID do médico a ser atualizado.</param>
+        /// <param name="crmMedico">O CRM do médico a ser atualizado.</param>
         /// <param name="medicoAtualizado">Os dados atualizados do médico.</param>
         /// <returns>Resposta vazia se a atualização for bem-sucedida.</returns>
-        [SwaggerOperation(Summary = "Atualiza um médico", Description = "Este endpoint atualiza os detalhes de um médico com base no ID fornecido.")]
+        [SwaggerOperation(Summary = "Atualiza um médico", Description = "Este endpoint atualiza os detalhes de um médico com base no CRM fornecido.")]
         [SwaggerResponse(204, "Médico atualizado com sucesso")] // Resposta para atualização bem-sucedida
         [SwaggerResponse(404, "Médico não encontrado")] // Resposta para caso o médico não seja encontrado
-        [HttpPut("{id}")] // Método responde a HTTP PUT com ID na URL (ex: api/Medico/1)
-        public async Task<IActionResult> UpdateMedico(int id, [FromBody] Medico medicoAtualizado)
+        [HttpPut("{crmMedico}")] // Método responde a HTTP PUT com CRM na URL (ex: api/Medico/123456)
+        public async Task<IActionResult> UpdateMedico(int crmMedico, [FromBody] Medico medicoAtualizado)
         {
-            // Verifica se o ID na URL corresponde ao ID do objeto
-            if (id != medicoAtualizado.IdMedico)
+            // Verifica se o CRM na URL corresponde ao CRM do objeto
+            if (crmMedico != medicoAtualizado.CrmMedico)
             {
-                return BadRequest(new { message = "O ID do médico não corresponde." });
+                return BadRequest(new { message = "O CRM do médico não corresponde." });
             }
 
             // Atualiza o médico usando o serviço
@@ -108,18 +107,18 @@ namespace AiHackApi.Controllers
         }
 
         /// <summary>
-        /// Exclui um médico pelo ID.
+        /// Exclui um médico pelo CRM.
         /// </summary>
-        /// <param name="id">O ID do médico a ser excluído.</param>
+        /// <param name="crmMedico">O CRM do médico a ser excluído.</param>
         /// <returns>Resposta vazia se a exclusão for bem-sucedida.</returns>
-        [SwaggerOperation(Summary = "Exclui um médico", Description = "Este endpoint exclui um médico com base no ID fornecido.")]
+        [SwaggerOperation(Summary = "Exclui um médico", Description = "Este endpoint exclui um médico com base no CRM fornecido.")]
         [SwaggerResponse(204, "Médico excluído com sucesso")] // Resposta para exclusão bem-sucedida
         [SwaggerResponse(404, "Médico não encontrado")] // Resposta caso o médico não seja encontrado
-        [HttpDelete("{id}")] // Método responde a HTTP DELETE com ID na URL (ex: api/Medico/1)
-        public async Task<IActionResult> DeleteMedico(int id)
+        [HttpDelete("{crmMedico}")] // Método responde a HTTP DELETE com CRM na URL (ex: api/Medico/123456)
+        public async Task<IActionResult> DeleteMedico(int crmMedico)
         {
-            // Exclui o médico pelo ID usando o serviço
-            var sucesso = await _medicoService.DeleteMedicoAsync(id);
+            // Exclui o médico pelo CRM usando o serviço
+            var sucesso = await _medicoService.DeleteMedicoAsync(crmMedico);
 
             // Se o médico não for encontrado, retorna 404 Not Found
             if (!sucesso)
@@ -132,3 +131,4 @@ namespace AiHackApi.Controllers
         }
     }
 }
+

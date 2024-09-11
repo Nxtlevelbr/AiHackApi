@@ -15,11 +15,11 @@ public interface IMedicoRepository
     Task<Medico> CreateMedicoAsync(Medico medico);
 
     /// <summary>
-    /// Obtém os detalhes de um médico específico pelo ID.
+    /// Obtém os detalhes de um médico específico pelo CRM.
     /// </summary>
-    /// <param name="id">O ID do médico.</param>
-    /// <returns>O médico correspondente ao ID informado.</returns>
-    Task<Medico> GetMedicoByIdAsync(int id);
+    /// <param name="crmMedico">O CRM do médico.</param>
+    /// <returns>O médico correspondente ao CRM informado.</returns>
+    Task<Medico> GetMedicoByCrmAsync(int crmMedico);
 
     /// <summary>
     /// Retorna todos os médicos cadastrados no banco de dados.
@@ -35,9 +35,9 @@ public interface IMedicoRepository
     Task<Medico> UpdateMedicoAsync(Medico medico);
 
     /// <summary>
-    /// Remove um médico do banco de dados usando o ID.
+    /// Remove um médico do banco de dados usando o CRM.
     /// </summary>
-    /// <param name="id">O ID do médico a ser deletado.</param>
+    /// <param name="crmMedico">O CRM do médico a ser deletado.</param>
     /// <returns>True se o médico foi deletado com sucesso, caso contrário False.</returns>
-    Task<bool> DeleteMedicoAsync(int id);
+    Task<bool> DeleteMedicoAsync(int crmMedico);
 }

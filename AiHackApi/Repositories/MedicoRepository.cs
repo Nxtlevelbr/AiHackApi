@@ -31,14 +31,14 @@ public class MedicoRepository : IMedicoRepository
     }
 
     /// <summary>
-    /// Obtém um médico específico pelo ID.
+    /// Obtém um médico específico pelo CRM.
     /// </summary>
-    /// <param name="id">O ID do médico.</param>
-    /// <returns>O objeto Medico correspondente ao ID.</returns>
-    public async Task<Medico> GetMedicoByIdAsync(int id)
+    /// <param name="crmMedico">O CRM do médico.</param>
+    /// <returns>O objeto Medico correspondente ao CRM.</returns>
+    public async Task<Medico> GetMedicoByCrmAsync(int crmMedico)
     {
-        // Busca o médico pelo ID no banco de dados
-        var medico = await _context.Medicos.FindAsync(id);
+        // Busca o médico pelo CRM no banco de dados
+        var medico = await _context.Medicos.FindAsync(crmMedico);
         // Retorna o médico ou lança uma exceção se não for encontrado
         return medico ?? throw new NotFoundException("Médico não encontrado");
     }
@@ -73,14 +73,14 @@ public class MedicoRepository : IMedicoRepository
     }
 
     /// <summary>
-    /// Exclui um médico do banco de dados.
+    /// Exclui um médico do banco de dados pelo CRM.
     /// </summary>
-    /// <param name="id">O ID do médico a ser excluído.</param>
+    /// <param name="crmMedico">O CRM do médico a ser excluído.</param>
     /// <returns>True se o médico foi excluído com sucesso, caso contrário False.</returns>
-    public async Task<bool> DeleteMedicoAsync(int id)
+    public async Task<bool> DeleteMedicoAsync(int crmMedico)
     {
-        // Busca o médico pelo ID
-        var medico = await _context.Medicos.FindAsync(id);
+        // Busca o médico pelo CRM
+        var medico = await _context.Medicos.FindAsync(crmMedico);
         // Se não for encontrado, retorna false
         if (medico == null) return false;
 
