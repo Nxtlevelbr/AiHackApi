@@ -25,10 +25,18 @@ namespace AiHackApi.Controllers
         /// </summary>
         /// <returns>Uma lista de objetos PacienteDto.</returns>
         [HttpGet] // Método responde a requisições HTTP GET
-        public async Task<IEnumerable<PacienteDto>> GetPacientes()
+        public async Task<ActionResult<IEnumerable<PacienteDto>>> GetPacientes()
         {
-            // Chama o serviço para obter todos os pacientes e retorna a lista
-            return await _pacienteService.GetAllPacientesAsync();
+            // Chama o serviço para obter todos os pacientes
+            var pacientes = await _pacienteService.GetAllPacientesAsync();
+
+            // Verifica se há pacientes e retorna 204 No Content se a lista estiver vazia
+            if (pacientes == null || !pacientes.Any())
+            {
+                return NoContent(); // Retorna 204 No Content se não houver pacientes
+            }
+
+            return Ok(pacientes); // Retorna 200 OK com a lista de pacientes
         }
 
         /// <summary>
@@ -45,11 +53,10 @@ namespace AiHackApi.Controllers
             // Se o paciente não for encontrado, retorna 404
             if (paciente == null)
             {
-                return NotFound(); // Retorna 404 Not Found
+                return NotFound(new { message = "Paciente não encontrado." }); // Retorna 404 Not Found com mensagem
             }
 
-            // Retorna 200 OK com os dados do paciente
-            return Ok(paciente);
+            return Ok(paciente); // Retorna 200 OK com os dados do paciente
         }
 
         /// <summary>
@@ -79,14 +86,13 @@ namespace AiHackApi.Controllers
             // Verifica se o ID da URL corresponde ao ID do objeto paciente
             if (id != pacienteDto.IdPaciente)
             {
-                return BadRequest(); // Retorna 400 Bad Request se os IDs não coincidirem
+                return BadRequest(new { message = "O ID informado não corresponde ao paciente." }); // Retorna 400 Bad Request se os IDs não coincidirem
             }
 
             // Chama o serviço para atualizar o paciente
             await _pacienteService.UpdatePacienteAsync(pacienteDto);
 
-            // Retorna 204 No Content se a atualização for bem-sucedida
-            return NoContent();
+            return NoContent(); // Retorna 204 No Content se a atualização for bem-sucedida
         }
 
         /// <summary>
@@ -97,20 +103,19 @@ namespace AiHackApi.Controllers
         [HttpDelete("{id}")] // Método responde a HTTP DELETE com um ID na URL
         public async Task<IActionResult> DeletePaciente(int id)
         {
-            // Chama o serviço para obter o paciente pelo ID
+            // Chama o serviço para verificar se o paciente existe
             var paciente = await _pacienteService.GetPacienteByIdAsync(id);
 
             // Se o paciente não for encontrado, retorna 404
             if (paciente == null)
             {
-                return NotFound(); // Retorna 404 Not Found se o paciente não existir
+                return NotFound(new { message = "Paciente não encontrado." }); // Retorna 404 Not Found se o paciente não existir
             }
 
             // Chama o serviço para excluir o paciente
             await _pacienteService.DeletePacienteAsync(id);
 
-            // Retorna 204 No Content se a exclusão for bem-sucedida
-            return NoContent();
+            return NoContent(); // Retorna 204 No Content se a exclusão for bem-sucedida
         }
     }
 }
