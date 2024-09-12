@@ -9,7 +9,7 @@ Descrição do Projeto
 A AiHackApi é uma API desenvolvida com ASP.NET Core para gerenciar consultas médicas e outros serviços de saúde. A API interage com um banco de dados Oracle, oferecendo uma interface RESTful que permite a criação, leitura, atualização e exclusão (CRUD) de consultas médicas, pacientes, médicos, endereços, contatos e outras entidades. O projeto segue boas práticas de arquitetura e segurança, garantindo escalabilidade, manutenibilidade e integridade dos dados.
 
 Arquitetura
-A API segue uma arquitetura monolítica, onde todos os componentes estão centralizados em um único projeto. O código está organizado em camadas, o que facilita a manutenção e evolução da aplicação. As camadas principais são:
+A API segue uma arquitetura monolítica, onde todos os componentes estão centralizados em um único projeto. O código está organizado em camadas, facilitando a manutenção e evolução da aplicação. As camadas principais são:
 
 Controllers: Manipulam as requisições HTTP e retornam respostas.
 Services: Implementam a lógica de negócios.
@@ -23,45 +23,57 @@ Documentação Interativa
 A API é documentada com Swagger/OpenAPI, permitindo que você explore e teste os endpoints diretamente no navegador. Isso facilita a integração com desenvolvedores e testadores, oferecendo uma interface amigável para interagir com a API.
 
 Instruções Detalhadas para Executar a API
-Requisitos:
-
+Requisitos
 .NET SDK 8.0: Certifique-se de que o SDK .NET 8.0 está instalado. Você pode verificar a versão instalada com o comando:
 :
 dotnet --version
 :
-Passo a Passo:
+Passo a Passo
 Clone o Repositório: Primeiro, você deve clonar o repositório da API. Para isso, execute o seguinte comando no terminal ou prompt de comando:
-
 :
 git clone https://github.com/Nxtlevelbr/AiHackApi.git
 Acesse o Diretório do Projeto: Navegue até o diretório onde o projeto foi clonado:
-
 :
-cd AiHackApi
+cd AiHackApi/AiHackApi
+Restaurar Pacotes e Construir o Projeto: Execute os seguintes comandos para restaurar os pacotes e construir o projeto:
+:
+dotnet restore
+dotnet build
+:
+Executar a Aplicação: Inicie a aplicação com o comando:
+:
+dotnet run
+:
 Acessar a API pelo Navegador: Com a aplicação em execução, você pode acessar o Swagger para interagir com a documentação da API e testar os endpoints. Abra seu navegador e acesse:
 :
-
 http://localhost:5000/index.html
 Fluxo Sugerido de Inserção de Dados
-1. Inserir Especialidade
+Inserir Especialidade
+
 Endpoint: POST /api/especialidades
 Descrição: Insira as especialidades médicas necessárias antes de inserir médicos ou consultas.
-2. Inserir Bairro
+Inserir Bairro
+
 Endpoint: POST /api/bairros
 Descrição: Insira os bairros para serem referenciados pelos endereços de pacientes, médicos e outros.
-3. Inserir Endereço
+Inserir Endereço
+
 Endpoint: POST /api/enderecos
 Descrição: Insira os endereços completos, incluindo a referência ao bairro.
-4. Inserir Contato
+Inserir Contato
+
 Endpoint: POST /api/contatos
 Descrição: Insira os detalhes de contato (e-mail e telefone).
-5. Inserir Paciente
+Inserir Paciente
+
 Endpoint: POST /api/pacientes
 Descrição: Insira os pacientes, relacionando-os aos endereços e contatos previamente inseridos.
-6. Inserir Médico
+Inserir Médico
+
 Endpoint: POST /api/medicos
 Descrição: Insira os médicos, relacionando-os às especialidades e contatos previamente inseridos.
-7. Inserir Consulta
+Inserir Consulta
+
 Endpoint: POST /api/consultas
 Descrição: Insira as consultas médicas, relacionando-as aos médicos e pacientes previamente cadastrados.
 Principais Endpoints para Testar
