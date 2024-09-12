@@ -12,8 +12,8 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace AiHackApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240911204042_UpdateModels")]
-    partial class UpdateModels
+    [Migration("20240912130539_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,24 +46,32 @@ namespace AiHackApi.Migrations
 
             modelBuilder.Entity("AiHackApi.Models.Consulta", b =>
                 {
-                    b.Property<DateTime>("DataHoraConsulta")
-                        .HasColumnType("TIMESTAMP(7)")
-                        .HasColumnName("data_hora_consulta");
+                    b.Property<int>("IdConsulta")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("id_consulta");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdConsulta"));
 
                     b.Property<string>("CpfPaciente")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR2(450)")
                         .HasColumnName("cpf_paciente");
 
-                    b.Property<int>("TbMedicosIdMedico")
-                        .HasColumnType("NUMBER(10)")
-                        .HasColumnName("tb_medicos_id_medico");
+                    b.Property<DateTime>("DataHoraConsulta")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("data_hora_consulta");
 
                     b.Property<string>("StatusConsulta")
                         .IsRequired()
                         .HasColumnType("NVARCHAR2(2000)")
                         .HasColumnName("status_consulta");
 
-                    b.HasKey("DataHoraConsulta", "CpfPaciente", "TbMedicosIdMedico");
+                    b.Property<int>("TbMedicosIdMedico")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("tb_medicos_id_medico");
+
+                    b.HasKey("IdConsulta");
 
                     b.HasIndex("CpfPaciente");
 

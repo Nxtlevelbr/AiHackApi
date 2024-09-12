@@ -5,11 +5,11 @@ namespace AiHackApi.DTOs
     // sem expor diretamente o modelo de dados do banco.
     public class ConsultaDto
     {
+        // Propriedade que representa o ID único da consulta
+        public int IdConsulta { get; set; }
+
         // Propriedade que representa a data e hora da consulta
         public DateTime DataHoraConsulta { get; set; }
-
-        // Propriedade que armazena o diagnóstico da consulta
-        public string Diagnostico { get; set; }
 
         // Propriedade que representa o CPF do paciente relacionado à consulta
         public string CpfPaciente { get; set; }
@@ -18,13 +18,11 @@ namespace AiHackApi.DTOs
         public int IdMedico { get; set; }
 
         // Construtor que inicializa o DTO com valores específicos para todas as propriedades
-        public ConsultaDto(DateTime dataHoraConsulta, string diagnostico, string cpfPaciente, int idMedico)
+        public ConsultaDto(int idConsulta, DateTime dataHoraConsulta, string cpfPaciente, int idMedico)
         {
             // Inicializa as propriedades com os valores fornecidos
+            IdConsulta = idConsulta;
             DataHoraConsulta = dataHoraConsulta;
-
-            // Verifica se Diagnostico é nulo e lança uma exceção se for
-            Diagnostico = diagnostico ?? throw new ArgumentNullException(nameof(diagnostico));
 
             // Inicializa o CPF do paciente e o ID do médico
             CpfPaciente = cpfPaciente ?? throw new ArgumentNullException(nameof(cpfPaciente));
@@ -34,10 +32,11 @@ namespace AiHackApi.DTOs
         // Construtor padrão para inicializar o DTO com valores padrão
         public ConsultaDto()
         {
-            // Inicializa DataHoraConsulta com a menor data possível e Diagnostico com uma string vazia
+            // Inicializa as propriedades com valores padrão
+            IdConsulta = 0;
             DataHoraConsulta = DateTime.MinValue;
-            Diagnostico = string.Empty;
             CpfPaciente = string.Empty;
+            IdMedico = 0;
         }
     }
 }

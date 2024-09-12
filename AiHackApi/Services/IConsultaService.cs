@@ -1,10 +1,6 @@
-﻿// Importa classes e namespaces necessários para o funcionamento da aplicação.
-// AiHackApi.Models: Contém a definição do modelo de dados, como Consulta.
-using AiHackApi.Models;
-// System.Collections.Generic: Fornece suporte para coleções genéricas, como IEnumerable.
-using System.Collections.Generic;
-// System.Threading.Tasks: Fornece suporte para operações assíncronas com Task.
-using System.Threading.Tasks;
+﻿using AiHackApi.Models; // Importa os modelos de dados, como Consulta
+using System.Collections.Generic; // Para coleções genéricas como IEnumerable
+using System.Threading.Tasks; // Para o uso de operações assíncronas
 
 public interface IConsultaService
 {
@@ -15,13 +11,11 @@ public interface IConsultaService
     Task<IEnumerable<Consulta>> GetAllConsultasAsync();
 
     /// <summary>
-    /// Obtém uma consulta específica pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
+    /// Obtém uma consulta específica pelo IdConsulta.
     /// </summary>
-    /// <param name="dataHoraConsulta">A data e hora da consulta.</param>
-    /// <param name="cpfPaciente">O CPF do paciente.</param>
-    /// <param name="idMedico">O ID do médico.</param>
-    /// <returns>A tarefa que representa a operação assíncrona. O resultado é a consulta correspondente à chave composta ou null se não for encontrada.</returns>
-    Task<Consulta?> GetConsultaByIdAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico);
+    /// <param name="idConsulta">O Id da consulta.</param>
+    /// <returns>A tarefa que representa a operação assíncrona. O resultado é a consulta correspondente ao Id fornecido ou null se não for encontrada.</returns>
+    Task<Consulta?> GetConsultaByIdAsync(int idConsulta);
 
     /// <summary>
     /// Cria uma nova consulta e a adiciona ao repositório.
@@ -38,11 +32,9 @@ public interface IConsultaService
     Task UpdateConsultaAsync(Consulta consulta);
 
     /// <summary>
-    /// Remove uma consulta do repositório pela chave composta (DataHoraConsulta, CpfPaciente, TbMedicosIdMedico).
+    /// Remove uma consulta do repositório pelo IdConsulta.
     /// </summary>
-    /// <param name="dataHoraConsulta">A data e hora da consulta a ser removida.</param>
-    /// <param name="cpfPaciente">O CPF do paciente da consulta a ser removida.</param>
-    /// <param name="idMedico">O ID do médico da consulta a ser removida.</param>
+    /// <param name="idConsulta">O Id da consulta a ser removida.</param>
     /// <returns>A tarefa que representa a operação assíncrona.</returns>
-    Task DeleteConsultaAsync(DateTime dataHoraConsulta, string cpfPaciente, int idMedico);
+    Task DeleteConsultaAsync(int idConsulta);
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AiHackApi.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateModels : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -116,14 +116,16 @@ namespace AiHackApi.Migrations
                 name: "tb_consultas",
                 columns: table => new
                 {
+                    id_consulta = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
                     data_hora_consulta = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: false),
+                    status_consulta = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
                     tb_medicos_id_medico = table.Column<int>(type: "NUMBER(10)", nullable: false),
-                    cpf_paciente = table.Column<string>(type: "NVARCHAR2(450)", nullable: false),
-                    status_consulta = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false)
+                    cpf_paciente = table.Column<string>(type: "NVARCHAR2(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_consultas", x => new { x.data_hora_consulta, x.cpf_paciente, x.tb_medicos_id_medico });
+                    table.PrimaryKey("PK_tb_consultas", x => x.id_consulta);
                     table.ForeignKey(
                         name: "FK_tb_consultas_tb_medicos_tb_medicos_id_medico",
                         column: x => x.tb_medicos_id_medico,
