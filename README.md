@@ -145,13 +145,6 @@ POST /api/consultas: Cria uma nova consulta médica.
 PUT /api/consultas/{id}: Atualiza uma consulta existente.
 DELETE /api/consultas/{id}: Exclui uma consulta.
 
-Testes sugeridos:
-
-GET /api/consultas: Verifique se todas as consultas são retornadas corretamente.
-POST /api/consultas: Confirme se novas consultas são criadas conforme esperado.
-PUT /api/consultas/{id}: Valide se as atualizações em uma consulta específica estão funcionando.
-DELETE /api/consultas/{id}: Verifique se a exclusão de consultas ocorre sem erros.
-
 O projeto AiHackApi foi desenvolvido seguindo as melhores práticas de desenvolvimento de software,
 com uma estrutura modular e organizada. A escolha por uma arquitetura monolítica e a utilização de padrões como
 Singleton, Factory e Repository garantem a escalabilidade e a facilidade de manutenção da aplicação. 
